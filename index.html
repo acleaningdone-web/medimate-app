@@ -1,0 +1,2671 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="한인 상비약 수첩" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="theme-color" content="#0f766e" />
+  <link rel="manifest" id="pwa-manifest" />
+  <title>한인 상비약 수첩 - 해외 거주 한인 맞춤형 약국 매칭 가이드</title>
+  <!-- Tailwind CSS 로드 -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Noto Sans KR & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+KR:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Noto Sans KR"', 'Inter', 'sans-serif'],
+          },
+          colors: {
+            medi: {
+              50: '#f0fdfa',
+              100: '#ccfbf1',
+              200: '#99f6e4',
+              500: '#14b8a6',
+              600: '#0d9488',
+              700: '#0f766e',
+              800: '#115e59',
+              900: '#134e4a',
+            }
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    :root {
+      --font-zoom: 1.24;
+    }
+    html {
+      font-size: calc(16px * var(--font-zoom));
+    }
+    .text-\[9px\] { font-size: calc(11px * var(--font-zoom)) !important; line-height: 1.4 !important; }
+    .text-\[10px\] { font-size: calc(12px * var(--font-zoom)) !important; line-height: 1.45 !important; }
+    .text-\[11px\] { font-size: calc(13px * var(--font-zoom)) !important; line-height: 1.5 !important; }
+    .text-xs { font-size: calc(14px * var(--font-zoom)) !important; line-height: 1.55 !important; }
+    .text-sm { font-size: calc(15.5px * var(--font-zoom)) !important; line-height: 1.55 !important; }
+    .text-base { font-size: calc(17.5px * var(--font-zoom)) !important; line-height: 1.45 !important; }
+
+    body {
+      background-color: #e6f0ef;
+      font-family: 'Noto Sans KR', 'Inter', sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    .drag-scroll {
+      cursor: grab;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    .drag-scroll.is-dragging {
+      cursor: grabbing;
+      scroll-behavior: auto !important;
+    }
+    @keyframes fadeSlideUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-card {
+      animation: fadeSlideUp 0.25s ease-out forwards;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex justify-center items-start sm:py-4 text-slate-800">
+
+  <!-- 모바일·폴더블 세로 화면 앱 컨테이너 -->
+  <div id="app-shell" class="w-full max-w-[540px] min-h-screen sm:min-h-[844px] sm:rounded-[34px] bg-[#f6fbfa] shadow-2xl border border-slate-200/80 flex flex-col overflow-hidden relative">
+
+    <!-- 핀치 줌 배율 배지 -->
+    <div id="pinch-zoom-pill" class="pointer-events-none hidden fixed top-16 left-1/2 -translate-x-1/2 z-50 bg-slate-900/90 text-white text-xs font-extrabold px-3.5 py-1.5 rounded-full shadow-lg">
+      🔍 글자 크기 112%
+    </div>
+
+    <!-- 상단 앱 헤더 -->
+    <header class="bg-gradient-to-br from-medi-800 via-medi-700 to-teal-600 text-white px-4 pt-4 pb-3.5 rounded-b-[24px] shadow-md shrink-0 z-10">
+      <div class="flex items-center justify-between gap-2">
+        <div class="flex items-center gap-2 min-w-0">
+          <span class="text-xl shrink-0">💊</span>
+          <h1 class="text-base font-extrabold tracking-tight truncate">한인 상비약 수첩</h1>
+        </div>
+
+        <div class="flex items-center gap-1.5 shrink-0">
+          <button
+            type="button"
+            onclick="openAuthModal()"
+            class="flex items-center gap-1 bg-white/15 hover:bg-white/25 active:scale-95 transition px-2 py-1 rounded-lg text-[11px] font-bold border border-white/25"
+          >
+            <span id="header-auth-icon">👤</span>
+            <span id="header-auth-text">로그인</span>
+            <span id="header-quota-pill" class="px-1.5 py-0.2 bg-amber-300 text-slate-900 rounded text-[10px] font-extrabold">3/3</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 국가 · 현지 언어 · 약사 제시 카드 한 줄 바 -->
+      <div class="mt-2.5 pt-2 border-t border-white/15 flex items-center justify-between gap-2 text-[11px]">
+        <button
+          type="button"
+          onclick="switchTab('settings')"
+          class="flex items-center gap-1.5 text-left truncate font-bold text-white"
+        >
+          <span id="header-country-flag">🇦🇺</span>
+          <span id="header-country-summary" class="truncate">호주 · 현지어: 영어</span>
+          <span class="text-medi-200 text-[10px]">변경 ▾</span>
+        </button>
+        <button
+          type="button"
+          onclick="openPharmacistCardModal()"
+          class="px-2.5 py-0.5 rounded-full bg-amber-300 text-slate-900 font-extrabold shrink-0 active:scale-95 transition"
+        >
+          🗣️ 약사 제시 카드
+        </button>
+      </div>
+    </header>
+
+    <!-- 메인 스크롤 영역 -->
+    <main id="main-scroll" class="flex-1 overflow-y-auto px-4 pt-3.5 pb-24 space-y-3.5">
+
+      <!-- ========================================================= -->
+      <!-- [TAB 1] 상비약 찾기 (핵심 2대 액션 + 상비약 매칭 결과)    -->
+      <!-- ========================================================= -->
+      <section id="view-guide" class="space-y-3">
+        <!-- 숨겨진 약 상자 카메라/앨범 입력 -->
+        <input
+          id="med-camera-input"
+          type="file"
+          accept="image/*"
+          capture="environment"
+          onchange="handleMedPhotoUpload(event)"
+          class="hidden"
+        />
+
+        <!-- 시니어 맞춤형 2대 핵심 빠른 버튼 -->
+        <div class="grid grid-cols-2 gap-2.5">
+          <button
+            type="button"
+            onclick="triggerMedCamera()"
+            class="p-3.5 rounded-2xl bg-gradient-to-br from-medi-700 to-teal-600 text-white text-left shadow-sm active:scale-98 transition flex flex-col justify-between gap-1.5"
+          >
+            <div class="flex items-center justify-between">
+              <span class="text-2xl">📸</span>
+              <span class="px-2 py-0.5 rounded-full bg-white/20 text-[10px] font-extrabold">AI 번역</span>
+            </div>
+            <div>
+              <div class="text-xs font-extrabold leading-snug">약 상자 찍어 번역</div>
+              <div class="text-[10px] text-medi-100 mt-0.5">외국 약 한국어 풀이</div>
+            </div>
+          </button>
+
+          <button
+            type="button"
+            onclick="openNearbyOpenPharmacy()"
+            class="p-3.5 rounded-2xl bg-white border-2 border-medi-200 hover:border-medi-500 text-slate-900 text-left shadow-xs active:scale-98 transition flex flex-col justify-between gap-1.5"
+          >
+            <div class="flex items-center justify-between">
+              <span class="text-2xl">🗺️</span>
+              <span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-extrabold">무료 지도</span>
+            </div>
+            <div>
+              <div class="text-xs font-extrabold leading-snug">지금 문 연 약국</div>
+              <div class="text-[10px] text-slate-500 mt-0.5">내 주변 영업 중 길찾기</div>
+            </div>
+          </button>
+        </div>
+
+        <!-- 한국 상비약 선택 카드 -->
+        <div class="bg-white rounded-2xl p-3.5 shadow-xs border border-slate-200/70 space-y-2.5">
+          <div class="flex items-center justify-between gap-2">
+            <span class="text-xs font-extrabold text-slate-800">💊 한국 상비약 선택 <span id="med-count-badge" class="text-medi-700">13종</span></span>
+            <div class="flex items-center gap-1.5">
+              <div class="relative w-28">
+                <input
+                  id="med-search"
+                  type="text"
+                  placeholder="약·증상 검색"
+                  oninput="handleMedSearch(this.value)"
+                  class="w-full text-[11px] bg-slate-100 rounded-lg pl-6 pr-2 py-1 focus:outline-none focus:bg-white focus:ring-1 focus:ring-medi-500"
+                />
+                <span class="absolute left-2 top-1 text-[10px] text-slate-400">🔍</span>
+              </div>
+              <button
+                type="button"
+                id="btn-toggle-med-view"
+                onclick="toggleMedGridMode()"
+                class="text-[10px] font-bold px-2 py-1 rounded-lg bg-slate-100 text-slate-700 shrink-0"
+              >
+                전체보기
+              </button>
+            </div>
+          </div>
+
+          <!-- 증상별 카테고리 탭 -->
+          <div id="category-tabs" class="drag-scroll flex gap-1 overflow-x-auto no-scrollbar">
+            <button type="button" onclick="selectCategory('all')" data-cat="all" class="cat-btn px-2.5 py-1 rounded-lg text-[11px] font-bold bg-medi-700 text-white shrink-0">전체</button>
+            <button type="button" onclick="selectCategory('pain')" data-cat="pain" class="cat-btn px-2.5 py-1 rounded-lg text-[11px] font-bold bg-slate-100 text-slate-600 shrink-0">해열·진통</button>
+            <button type="button" onclick="selectCategory('cold')" data-cat="cold" class="cat-btn px-2.5 py-1 rounded-lg text-[11px] font-bold bg-slate-100 text-slate-600 shrink-0">감기·목·코</button>
+            <button type="button" onclick="selectCategory('stomach')" data-cat="stomach" class="cat-btn px-2.5 py-1 rounded-lg text-[11px] font-bold bg-slate-100 text-slate-600 shrink-0">소화·배탈</button>
+            <button type="button" onclick="selectCategory('skin')" data-cat="skin" class="cat-btn px-2.5 py-1 rounded-lg text-[11px] font-bold bg-slate-100 text-slate-600 shrink-0">연고·파스·눈</button>
+          </div>
+
+          <!-- 상비약 가로 슬라이드 -->
+          <div class="relative">
+            <button
+              type="button"
+              id="med-scroll-left"
+              onclick="scrollMedList(-220)"
+              class="flex absolute left-0 top-1/2 -translate-y-1/2 z-10 w-6 h-6 rounded-full bg-white/95 shadow border border-slate-200 items-center justify-center text-slate-700"
+            >‹</button>
+            <div id="med-grid" class="drag-scroll flex gap-1.5 overflow-x-auto no-scrollbar py-0.5 px-1 scroll-smooth"></div>
+            <button
+              type="button"
+              id="med-scroll-right"
+              onclick="scrollMedList(220)"
+              class="flex absolute right-0 top-1/2 -translate-y-1/2 z-10 w-6 h-6 rounded-full bg-white/95 shadow border border-slate-200 items-center justify-center text-slate-700"
+            >›</button>
+          </div>
+        </div>
+
+        <!-- 현지 약국 매칭 결과 카드 -->
+        <div id="result-card" class="space-y-2.5 animate-card"></div>
+      </section>
+
+      <!-- ========================================================= -->
+      <!-- [TAB 2] AI 복약 도우미 (증상 기반 상비약 추천)             -->
+      <!-- ========================================================= -->
+      <section id="view-ask" class="hidden flex flex-col space-y-2.5">
+        <div class="bg-white rounded-2xl p-3.5 border border-slate-200/80 shadow-2xs flex items-center justify-between gap-2">
+          <div class="min-w-0">
+            <div id="ask-context-summary" class="text-xs font-extrabold text-slate-800 truncate">🇦🇺 호주 · 증상 맞춤 상비약 상담</div>
+            <div class="flex items-center gap-1.5 mt-1">
+              <span id="ask-quota-badge" class="text-[11px] font-bold text-medi-700">오늘 남은 무료 상담: 3 / 3회</span>
+              <button type="button" id="ask-upgrade-btn" onclick="openAuthModal()" class="text-[10px] font-extrabold text-amber-800 bg-amber-100 px-1.5 py-0.5 rounded">로그인 후 이용 (3회)</button>
+            </div>
+          </div>
+          <button type="button" onclick="clearChatHistory()" class="text-[10px] font-bold px-2.5 py-1.5 rounded-lg bg-slate-100 text-slate-600 shrink-0">초기화</button>
+        </div>
+
+        <!-- 필수 의료 안내 고지 배너 -->
+        <div class="px-3 py-2 rounded-xl bg-amber-50 border border-amber-200 text-[11px] text-amber-950 font-semibold leading-snug">
+          ⚠️ 안내되는 약품은 참고용 일반 상비약 정보입니다. <b>구매·복용 전 반드시 현지 약사 또는 의사와 상담하세요.</b>
+        </div>
+
+        <div id="ask-quick-chips" class="drag-scroll flex gap-1.5 overflow-x-auto no-scrollbar"></div>
+
+        <div id="chat-messages" class="bg-white rounded-2xl p-3.5 border border-slate-200/80 shadow-xs min-h-[300px] max-h-[410px] overflow-y-auto space-y-3"></div>
+
+        <form onsubmit="handleAskSubmit(event)" class="bg-white rounded-2xl p-1.5 border border-slate-200 shadow-sm flex items-center gap-1.5">
+          <input
+            id="ask-input"
+            type="text"
+            placeholder="어디가 어떻게 아프신가요? (예: 허리를 삐끗해서 아파요)"
+            class="flex-1 text-xs px-2.5 py-2 bg-transparent focus:outline-none text-slate-800"
+          />
+          <button type="submit" id="ask-submit-btn" class="px-3.5 py-2 rounded-xl bg-medi-700 text-white text-xs font-extrabold shrink-0">전송</button>
+        </form>
+      </section>
+
+      <!-- ========================================================= -->
+      <!-- [TAB 3] 거주 국가(전 세계) · 알레르기 · 화면 설정          -->
+      <!-- ========================================================= -->
+      <section id="view-settings" class="hidden space-y-3">
+
+        <!-- 1. 전 세계 거주·여행 국가 선택 -->
+        <div class="bg-white rounded-2xl p-3.5 shadow-xs border border-slate-200/70 space-y-2.5">
+          <div class="flex items-center justify-between">
+            <h2 class="text-xs font-extrabold text-slate-800">1. 현재 계신 국가 (전 세계 지원)</h2>
+            <span id="settings-lang-badge" class="text-[10px] font-extrabold px-2 py-0.5 rounded bg-medi-100 text-medi-800">약사 카드: 영어</span>
+          </div>
+
+          <!-- 전 세계 어떤 나라든 직접 입력/검색 -->
+          <div class="flex gap-1.5">
+            <input
+              id="custom-country-input"
+              type="text"
+              oninput="filterCountryPresets(this.value)"
+              placeholder="국가명 검색 또는 직접 입력 (예: 스페인, 브라질, 몽골)"
+              class="flex-1 text-xs bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 focus:outline-none focus:border-medi-600"
+            />
+            <button
+              type="button"
+              onclick="applyCustomCountry()"
+              class="px-3 py-2 rounded-xl bg-medi-700 text-white text-xs font-extrabold shrink-0"
+            >적용</button>
+          </div>
+
+          <div id="country-grid" class="grid grid-cols-2 gap-1.5 max-h-56 overflow-y-auto pr-0.5"></div>
+        </div>
+
+        <!-- 2. 복용 대상 & 알레르기 직접 입력 (약사 카드 자동 반영) -->
+        <div class="bg-white rounded-2xl p-3.5 shadow-xs border border-slate-200/70 space-y-2.5">
+          <h2 class="text-xs font-extrabold text-slate-800">2. 약사 제시 카드 기본 설정</h2>
+          <div class="grid grid-cols-3 gap-1.5">
+            <button type="button" onclick="selectPatientType('adult')" id="btn-pat-adult" class="py-2 rounded-xl text-xs font-bold border">🧑 성인</button>
+            <button type="button" onclick="selectPatientType('child')" id="btn-pat-child" class="py-2 rounded-xl text-xs font-bold border">👶 어린이</button>
+            <button type="button" onclick="selectPatientType('pregnant')" id="btn-pat-pregnant" class="py-2 rounded-xl text-xs font-bold border">🤰 임산부</button>
+          </div>
+
+          <div class="space-y-2 pt-1">
+            <div class="flex items-center justify-between text-xs">
+              <span class="font-bold text-slate-700">약물·음식 알레르기 여부</span>
+              <button type="button" onclick="toggleAllergy()" id="btn-allergy-toggle" class="px-3 py-1.5 rounded-lg text-[11px] font-extrabold border">알레르기 없음</button>
+            </div>
+
+            <!-- 알레르기 있음 선택 시 직접 작성 칸 노출 -->
+            <div id="allergy-detail-box" class="hidden space-y-1 bg-rose-50/80 border border-rose-200 rounded-xl p-2.5">
+              <label for="allergy-detail-input" class="text-[11px] font-extrabold text-rose-900 block">⚠️ 어떤 알레르기가 있나요? (약사 카드에 표시됨)</label>
+              <input
+                id="allergy-detail-input"
+                type="text"
+                oninput="updateAllergyDetail(this.value)"
+                placeholder="예: 페니실린(Penicillin), 아스피린, 부루펜, 땅콩"
+                class="w-full text-xs bg-white border border-rose-300 rounded-lg px-2.5 py-2 focus:outline-none focus:border-rose-500 text-slate-900"
+              />
+            </div>
+          </div>
+
+          <button type="button" onclick="switchTab('guide')" class="w-full py-2.5 rounded-xl bg-medi-700 text-white text-xs font-extrabold">
+            적용하고 상비약 찾기 →
+          </button>
+        </div>
+
+        <!-- 3. 화면 글자 크기 설정 -->
+        <div class="bg-white rounded-2xl p-3.5 shadow-xs border border-slate-200/70 space-y-2">
+          <div class="flex items-center justify-between">
+            <div class="text-xs font-extrabold text-slate-800">3. 화면 글자 크기 <span id="settings-zoom-percent" class="text-medi-700 font-bold">(124%)</span></div>
+            <span class="text-[10px] text-slate-400">두 손가락 벌리기·오므리기 지원</span>
+          </div>
+          <div class="grid grid-cols-3 gap-1.5">
+            <button type="button" onclick="setFontSize('normal')" id="btn-font-normal" class="py-2 rounded-xl text-xs font-extrabold border">보통 (105%)</button>
+            <button type="button" onclick="setFontSize('large')" id="btn-font-large" class="py-2 rounded-xl text-xs font-extrabold border">크게 (116%)</button>
+            <button type="button" onclick="setFontSize('xlarge')" id="btn-font-xlarge" class="py-2 rounded-xl text-xs font-extrabold border">아주 크게 (124%)</button>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- 약사에게 바로 보여주는 현지 언어 증상·약품 제시 모달 -->
+    <div id="pharmacist-modal" class="hidden absolute inset-0 z-50 bg-slate-900/75 backdrop-blur-xs flex items-center justify-center p-4">
+      <div class="w-full max-w-[440px] max-h-[90vh] bg-white rounded-3xl p-5 shadow-2xl flex flex-col gap-3.5 animate-card">
+        <div class="flex items-center justify-between border-b border-slate-100 pb-3 shrink-0">
+          <div class="flex items-center gap-2">
+            <span class="text-xl">🏥</span>
+            <div>
+              <span id="pharmacist-modal-lang-tag" class="text-[10px] font-extrabold text-medi-700">🇦🇺 호주 약사 제시 카드 (영어)</span>
+              <h3 id="pharmacist-modal-title" class="text-sm font-extrabold text-slate-900">약사님께 이 화면을 보여주세요</h3>
+            </div>
+          </div>
+          <button type="button" onclick="closePharmacistCardModal()" class="w-8 h-8 rounded-full bg-slate-100 text-slate-600 font-bold text-xs flex items-center justify-center">✕</button>
+        </div>
+
+        <div id="pharmacist-card-content" class="overflow-y-auto bg-medi-50/80 border-2 border-medi-600 rounded-2xl p-4 space-y-3"></div>
+
+        <!-- 약사가 다른 약을 권해줬을 때 즉시 카메라로 찍어 확인하는 원스톱 동선 -->
+        <div class="space-y-2 shrink-0">
+          <button
+            type="button"
+            id="pharmacist-alt-scan-btn"
+            onclick="scanAlternativeFromPharmacist()"
+            class="w-full py-3 px-3 rounded-xl bg-medi-700 hover:bg-medi-800 text-white text-xs font-extrabold flex items-center justify-center gap-1.5 shadow-xs transition"
+          >
+            <span>📸</span>
+            <span>약사가 다른 약을 줬나요? 카메라로 찍어서 확인하기</span>
+          </button>
+          <button
+            type="button"
+            id="pharmacist-urgent-map-btn"
+            onclick="openNearbyMedicalClinic()"
+            class="hidden w-full py-3 px-3 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-extrabold flex items-center justify-center gap-1.5 shadow-xs transition"
+          >
+            <span>🏥</span>
+            <span>지금 문 연 가까운 병원·의원(GP) 찾기</span>
+          </button>
+          <button
+            type="button"
+            onclick="closePharmacistCardModal()"
+            class="w-full py-2.5 rounded-xl bg-slate-900 text-white text-xs font-extrabold"
+          >
+            닫기
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 약 상자 카메라 촬영 한국어 번역 결과 모달 -->
+    <div id="photo-result-modal" class="hidden absolute inset-0 z-50 bg-slate-900/75 backdrop-blur-xs flex items-center justify-center p-4">
+      <div class="w-full max-w-[440px] max-h-[88vh] bg-white rounded-3xl p-5 shadow-2xl flex flex-col gap-3 animate-card">
+        <div class="flex items-center justify-between border-b border-slate-100 pb-3 shrink-0">
+          <div class="flex items-center gap-2">
+            <span class="text-xl">📸</span>
+            <div>
+              <span class="text-[10px] font-extrabold text-medi-700">AI 약 상자 한국어 번역</span>
+              <h3 class="text-sm font-extrabold text-slate-900">약 효능 및 복용법 안내</h3>
+            </div>
+          </div>
+          <button type="button" onclick="closePhotoResultModal()" class="w-8 h-8 rounded-full bg-slate-100 text-slate-600 font-bold text-xs flex items-center justify-center">✕</button>
+        </div>
+
+        <div class="overflow-y-auto space-y-3 pr-0.5">
+          <div class="w-full h-36 rounded-2xl bg-slate-100 overflow-hidden border border-slate-200 flex items-center justify-center">
+            <img id="scanned-med-preview" src="" alt="촬영한 약 상자" class="w-full h-full object-contain" />
+          </div>
+          <div id="scanned-med-analysis" class="bg-medi-50/70 border border-medi-200 rounded-2xl p-3.5 text-xs text-slate-800 leading-relaxed space-y-1.5"></div>
+          <div class="px-3 py-2 rounded-xl bg-amber-50 border border-amber-200 text-[11px] text-amber-950 font-semibold">
+            ⚠️ 구매·복용 전 반드시 현지 약사 또는 의사와 상담하세요.
+          </div>
+        </div>
+
+        <button type="button" onclick="closePhotoResultModal()" class="w-full py-3 rounded-xl bg-slate-900 text-white text-xs font-extrabold shrink-0">확인 및 닫기</button>
+      </div>
+    </div>
+
+    <!-- 로그인 / 간편 시작 모달 -->
+    <div id="auth-modal" class="hidden absolute inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
+      <div class="w-full max-w-[390px] bg-white rounded-3xl p-5 shadow-2xl space-y-4 animate-card">
+        <div class="flex items-start justify-between">
+          <div>
+            <span class="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-medi-100 text-medi-800">무료 회원 혜택</span>
+            <h3 id="auth-modal-title" class="text-base font-extrabold text-slate-900 mt-1">로그인하고 혜택 업그레이드</h3>
+            <p id="auth-modal-desc" class="text-xs text-slate-500 mt-0.5 leading-relaxed">
+              비로그인은 <b>기본 상비약 검색 및 약사 제시 카드</b>만 이용 가능합니다. 로그인 시 <b>AI 복약 상담 하루 3회 + 약 봉투·처방전 카메라 스캔 하루 2회</b>가 무료 제공됩니다.
+            </p>
+          </div>
+          <button type="button" onclick="closeAuthModal()" class="w-7 h-7 rounded-full bg-slate-100 text-slate-500 font-bold text-xs flex items-center justify-center">✕</button>
+        </div>
+
+        <div id="auth-logged-out-box" class="space-y-2.5">
+          <form onsubmit="handleEmailDemoLogin(event)" class="space-y-2">
+            <div class="grid grid-cols-5 gap-1.5">
+              <input
+                id="demo-name-input"
+                type="text"
+                required
+                maxlength="12"
+                placeholder="이름 / 닉네임"
+                class="col-span-2 text-xs bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 focus:outline-none focus:border-medi-600"
+              />
+              <input
+                id="demo-email-input"
+                type="email"
+                required
+                placeholder="이메일 주소"
+                class="col-span-3 text-xs bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 focus:outline-none focus:border-medi-600"
+              />
+            </div>
+            <button
+              type="submit"
+              class="w-full py-2.5 rounded-xl bg-medi-700 hover:bg-medi-800 text-white text-xs font-extrabold transition"
+            >
+              이름 · 이메일로 간편 시작하기
+            </button>
+          </form>
+        </div>
+
+        <div id="auth-logged-in-box" class="hidden space-y-3">
+          <div class="p-3.5 rounded-2xl bg-medi-50 border border-medi-200 flex items-center justify-between">
+            <div>
+              <div id="auth-user-name" class="text-xs font-extrabold text-medi-900">회원님</div>
+              <div id="auth-user-email" class="text-[11px] text-medi-700">user@example.com</div>
+            </div>
+            <span class="px-2 py-1 rounded-lg bg-white text-[11px] font-extrabold text-medi-700 border border-medi-200">무료 상담 15회</span>
+          </div>
+          <button
+            type="button"
+            onclick="handleUserLogout()"
+            class="w-full py-2.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 text-xs font-extrabold transition"
+          >
+            로그아웃 (비로그인 하루 3회 전환)
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 토스트 메시지 박스 -->
+    <div id="toast" class="pointer-events-none fixed bottom-20 left-1/2 -translate-x-1/2 bg-slate-900/95 text-white text-xs font-semibold px-4 py-2.5 rounded-full shadow-lg opacity-0 transition-opacity duration-200 z-50 whitespace-nowrap">
+      메시지
+    </div>
+
+    <!-- PWA 설치 안내 시트 -->
+    <div id="pwa-guide-modal" class="hidden absolute inset-0 z-50 bg-slate-900/65 backdrop-blur-xs flex items-center justify-center p-4">
+      <div class="w-full max-w-[390px] bg-white rounded-3xl p-5 shadow-2xl space-y-3.5 animate-card">
+        <div class="flex items-start justify-between">
+          <div>
+            <span class="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-medi-100 text-medi-800">주소창 없는 전체화면 앱</span>
+            <h3 id="pwa-guide-title" class="text-base font-extrabold text-slate-900 mt-1">홈 화면에 앱 아이콘 추가</h3>
+          </div>
+          <button type="button" onclick="closePWAGuideModal()" class="w-7 h-7 rounded-full bg-slate-100 text-slate-500 font-bold text-xs flex items-center justify-center">✕</button>
+        </div>
+        <div id="pwa-guide-steps" class="bg-slate-50 rounded-2xl p-3.5 border border-slate-200/80 space-y-2 text-xs text-slate-700 leading-relaxed"></div>
+        <button type="button" onclick="closePWAGuideModal()" class="w-full py-3 rounded-xl bg-medi-700 text-white text-xs font-extrabold">확인했어요</button>
+      </div>
+    </div>
+
+    <!-- 하단 3탭 네비게이션 바 (구급함 제거 후 핵심 3탭 집중) -->
+    <nav class="absolute bottom-0 inset-x-0 bg-white/95 backdrop-blur-md border-t border-slate-200/80 px-3 py-2 grid grid-cols-3 gap-1.5 z-20">
+      <button type="button" onclick="switchTab('guide')" id="nav-guide" class="flex flex-col items-center gap-0.5 py-1.5 rounded-xl text-medi-700 font-bold transition">
+        <span class="text-base">💊</span>
+        <span class="text-[11px]">상비약 찾기</span>
+      </button>
+      <button type="button" onclick="switchTab('ask')" id="nav-ask" class="flex flex-col items-center gap-0.5 py-1.5 rounded-xl text-slate-400 font-semibold transition">
+        <span class="text-base">💬</span>
+        <span class="text-[11px]">AI 복약상담</span>
+      </button>
+      <button type="button" onclick="switchTab('settings')" id="nav-settings" class="flex flex-col items-center gap-0.5 py-1.5 rounded-xl text-slate-400 font-semibold transition">
+        <span class="text-base">⚙️</span>
+        <span class="text-[11px]">국가·설정</span>
+      </button>
+    </nav>
+  </div>
+
+  <script>
+    // =========================================================================
+    // 1. 전 세계 국가·현지 언어 매핑 & 한국 상비약 데이터베이스
+    // =========================================================================
+    const GUEST_DAILY_LIMIT = 0;
+    const MEMBER_DAILY_LIMIT = 3;
+    const MEMORY_QA_CACHE = new Map();
+
+    // Firebase Cloud Functions 중계 서버 (API 키 보호)
+    const GEMINI_PROXY_URL = "https://asia-northeast3-medikorean-app.cloudfunctions.net/geminiProxy";
+
+    async function callGeminiViaProxy(payload, model = "gemini-3-flash-preview") {
+      const res = await fetch(GEMINI_PROXY_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ model, payload })
+      });
+      if (!res.ok) {
+        throw new Error(`Proxy HTTP ${res.status}`);
+      }
+      return await res.json();
+    }
+
+    // 현지 언어별 약사 제시 카드 문구 사전
+    const PHARMACIST_PHRASES = {
+      en: {
+        langName: '영어',
+        headline: 'Hello Pharmacist, I am looking for this medicine (or a suitable alternative).',
+        urgentDoctorHeadline: '⚠️ URGENT: I have severe symptoms and need to see a doctor (GP / Urgent Care) right away.',
+        lookingFor: 'Medicine / Active Ingredient',
+        symptom: 'My Symptoms',
+        patient: 'Patient',
+        allergy: 'Allergies',
+        adult: 'Adult',
+        child: 'Child (Please check age & weight dosage)',
+        pregnant: 'Pregnant / Breastfeeding (Please confirm safety)',
+        noAllergy: 'No known drug allergies',
+        hasAllergyPrefix: '⚠️ ALLERGIC TO: '
+      },
+      ja: {
+        langName: '일본어',
+        headline: '薬剤師さん、このお薬（または同じ成分のお薬）を探しています。',
+        urgentDoctorHeadline: '⚠️ 緊急：症状が重いため、すぐに医師の診察（病院・救急）を受けたいです。',
+        lookingFor: '探しているお薬・成分',
+        symptom: '現在の症状',
+        patient: '服用する方',
+        allergy: 'アレルギー',
+        adult: '大人（成人）',
+        child: '子供（年齢・体重に合うものをお願いします）',
+        pregnant: '妊娠中・授乳中（安全な薬か確認をお願いします）',
+        noAllergy: '薬のアレルギーはありません',
+        hasAllergyPrefix: '⚠️ アレルギーあり：'
+      },
+      vi: {
+        langName: '베트남어',
+        headline: 'Chào dược sĩ, tôi đang tìm loại thuốc này (hoặc thuốc có thành phần tương tự).',
+        urgentDoctorHeadline: '⚠️ KHẨN CẤP: Triệu chứng của tôi nghiêm trọng, tôi cần gặp bác sĩ ngay lập tức.',
+        lookingFor: 'Thuốc / Hoạt chất đang tìm',
+        symptom: 'Triệu chứng hiện tại',
+        patient: 'Người dùng thuốc',
+        allergy: 'Dị ứng thuốc',
+        adult: 'Người lớn',
+        child: 'Trẻ em (Vui lòng kiểm tra liều theo tuổi/cân nặng)',
+        pregnant: 'Phụ nữ mang thai / cho con bú',
+        noAllergy: 'Không bị dị ứng thuốc',
+        hasAllergyPrefix: '⚠️ DỊ ỨNG VỚI: '
+      },
+      th: {
+        langName: '태국어',
+        headline: 'สวัสดีเภสัชกร ฉันกำลังหายานี้ (หรือยาที่มีตัวยาเหมือนกัน)',
+        urgentDoctorHeadline: '⚠️ ด่วน: อาการของฉันรุนแรง ต้องการพบแพทย์ทันที',
+        lookingFor: 'ชื่อยา / ตัวยาสำคัญ',
+        symptom: 'อาการที่เป็นอยู่',
+        patient: 'ผู้ป่วย',
+        allergy: 'ประวัติการแพ้ยา',
+        adult: 'ผู้ใหญ่',
+        child: 'เด็ก (กรุณาเช็กขนาดยาตามอายุและน้ำหนัก)',
+        pregnant: 'ตั้งครรภ์ / ให้นมบุตร',
+        noAllergy: 'ไม่มีประวัติแพ้ยา',
+        hasAllergyPrefix: '⚠️ แพ้ยา/สาร: '
+      },
+      de: {
+        langName: '독일어',
+        headline: 'Guten Tag, ich suche dieses Medikament (oder ein vergleichbares Präparat).',
+        urgentDoctorHeadline: '⚠️ DRINGEND: Ich habe starke Symptome und muss sofort einen Arzt aufsuchen.',
+        lookingFor: 'Gesuchtes Medikament / Wirkstoff',
+        symptom: 'Meine Symptome',
+        patient: 'Patient',
+        allergy: 'Allergien',
+        adult: 'Erwachsener',
+        child: 'Kind (Bitte Dosierung nach Alter/Gewicht prüfen)',
+        pregnant: 'Schwanger / Stillzeit',
+        noAllergy: 'Keine bekannten Medikamentenallergien',
+        hasAllergyPrefix: '⚠️ ALLERGIE GEGEN: '
+      },
+      fr: {
+        langName: '프랑스어',
+        headline: 'Bonjour, je cherche ce médicament (ou un équivalent sans ordonnance).',
+        urgentDoctorHeadline: '⚠️ URGENT : Mes symptômes sont graves, je dois consulter un médecin immédiatement.',
+        lookingFor: 'Médicament / Principe actif recherché',
+        symptom: 'Mes symptômes',
+        patient: 'Patient',
+        allergy: 'Allergies',
+        adult: 'Adulte',
+        child: 'Enfant (Merci de vérifier le dosage)',
+        pregnant: 'Femme enceinte / allaitante',
+        noAllergy: 'Aucune allergie médicamenteuse connue',
+        hasAllergyPrefix: '⚠️ ALLERGIE À : '
+      },
+      es: {
+        langName: '스페인어',
+        headline: 'Hola farmacéutico/a, busco este medicamento (o uno equivalente).',
+        urgentDoctorHeadline: '⚠️ URGENTE: Tengo síntomas graves y necesito ver a un médico de inmediato.',
+        lookingFor: 'Medicamento / Principio activo',
+        symptom: 'Mis síntomas',
+        patient: 'Paciente',
+        allergy: 'Alergias',
+        adult: 'Adulto',
+        child: 'Niño/a (Por favor verificar dosis por edad/peso)',
+        pregnant: 'Embarazada / Lactancia',
+        noAllergy: 'Sin alergias a medicamentos conocidas',
+        hasAllergyPrefix: '⚠️ ALERGIA A: '
+      },
+      zh: {
+        langName: '중국어',
+        headline: '药师您好，我想买这种药（或成分相同的替代药品）。',
+        urgentDoctorHeadline: '⚠️ 紧急：我的症状比较严重，需要立即看医生（门诊/急诊）。',
+        lookingFor: '寻找的药品 / 有效成分',
+        symptom: '目前症状',
+        patient: '用药人',
+        allergy: '药物过敏史',
+        adult: '成人',
+        child: '儿童（请按年龄和体重确认剂量）',
+        pregnant: '孕妇 / 哺乳期',
+        noAllergy: '无已知药物过敏',
+        hasAllergyPrefix: '⚠️ 过敏原：'
+      },
+      id: {
+        langName: '인도네시아어',
+        headline: 'Halo Apoteker, saya sedang mencari obat ini (atau obat dengan kandungan sama).',
+        urgentDoctorHeadline: '⚠️ DARURAT: Gejala saya cukup berat, saya perlu segera bertemu dokter.',
+        lookingFor: 'Obat / Kandungan Aktif',
+        symptom: 'Gejala saya',
+        patient: 'Pasien',
+        allergy: 'Alergi Obat',
+        adult: 'Dewasa',
+        child: 'Anak-anak (Mohon cek dosis usia/berat badan)',
+        pregnant: 'Hamil / Menyusui',
+        noAllergy: 'Tidak ada alergi obat',
+        hasAllergyPrefix: '⚠️ ALERGI TERHADAP: '
+      },
+      it: {
+        langName: '이탈리아어',
+        headline: 'Buongiorno, cerco questo farmaco (o un equivalente da banco).',
+        urgentDoctorHeadline: '⚠️ URGENTE: Ho sintomi gravi e ho bisogno di vedere subito un medico.',
+        lookingFor: 'Farmaco / Principio attivo',
+        symptom: 'I miei sintomi',
+        patient: 'Paziente',
+        allergy: 'Allergie',
+        adult: 'Adulto',
+        child: 'Bambino (Controllare il dosaggio)',
+        pregnant: 'Gravidanza / Allattamento',
+        noAllergy: 'Nessuna allergia nota ai farmaci',
+        hasAllergyPrefix: '⚠️ ALLERGIA A: '
+      }
+    };
+
+    const COUNTRIES = [
+      { id: 'au', flag: '🇦🇺', name: '호주', lang: 'en', localPool: 'au', stores: 'Chemist Warehouse · Coles' },
+      { id: 'us', flag: '🇺🇸', name: '미국', lang: 'en', localPool: 'us', stores: 'CVS · Walgreens · Walmart' },
+      { id: 'ca', flag: '🇨🇦', name: '캐나다', lang: 'en', localPool: 'us', stores: 'Shoppers Drug Mart · Walmart' },
+      { id: 'nz', flag: '🇳🇿', name: '뉴질랜드', lang: 'en', localPool: 'au', stores: 'Chemist Warehouse · Unichem' },
+      { id: 'uk', flag: '🇬🇧', name: '영국', lang: 'en', localPool: 'uk', stores: 'Boots · Superdrug · Tesco' },
+      { id: 'jp', flag: '🇯🇵', name: '일본', lang: 'ja', localPool: 'jp', stores: '마츠모토키요시 · 돈키호테' },
+      { id: 'vn', flag: '🇻🇳', name: '베트남', lang: 'vi', localPool: 'intl', stores: 'Pharmacity · Long Châu' },
+      { id: 'th', flag: '🇹🇭', name: '태국', lang: 'th', localPool: 'intl', stores: 'Boots · Watsons · Fascino' },
+      { id: 'ph', flag: '🇵🇭', name: '필리핀', lang: 'en', localPool: 'intl', stores: 'Mercury Drug · Watsons' },
+      { id: 'sg', flag: '🇸🇬', name: '싱가포르', lang: 'en', localPool: 'intl', stores: 'Guardian · Watsons' },
+      { id: 'id', flag: '🇮🇩', name: '인도네시아', lang: 'id', localPool: 'intl', stores: 'Kimia Farma · Guardian' },
+      { id: 'de', flag: '🇩🇪', name: '독일', lang: 'de', localPool: 'uk', stores: 'Apotheke (현지 약국)' },
+      { id: 'fr', flag: '🇫🇷', name: '프랑스', lang: 'fr', localPool: 'uk', stores: 'Pharmacie (초록 십자가 약국)' },
+      { id: 'es', flag: '🇪🇸', name: '스페인·중남미', lang: 'es', localPool: 'intl', stores: 'Farmacia (현지 약국)' },
+      { id: 'it', flag: '🇮🇹', name: '이탈리아', lang: 'it', localPool: 'uk', stores: 'Farmacia (현지 약국)' },
+      { id: 'cn', flag: '🇨🇳', name: '중국·대만', lang: 'zh', localPool: 'intl', stores: '대형 약방 · 屈臣氏(왓슨스)' }
+    ];
+
+    const MEDICINES = [
+      // 해열·진통
+      {
+        id: 'tylenol', category: 'pain', name: '타이레놀', subtitle: '두통·발열·치통', emoji: '💊',
+        ingredient: 'Paracetamol / Acetaminophen 500mg',
+        dosageAdult: '성인 1회 1~2정, 4~6시간 간격 (하루 최대 8정 초과 금지)',
+        dosageChild: '어린이용 시럽을 나이보다 "몸무게(kg)" 기준 눈금에 맞춰 계량 복용',
+        warning: '종합감기약과 중복 복용 주의 (간 손상 위험)',
+        symptomEn: 'Fever, headache, or mild-to-moderate pain (Non-NSAID)',
+        local: {
+          au: {
+            where: '마트(Coles·Woolworths)·약국 일반 매대',
+            adult: [
+              { name: 'Panadol Rapid / Optizorb', note: '가장 흔한 대표 브랜드 (마트·약국)' },
+              { name: 'Herron Paracetamol', note: '동일 성분 호주 일반 브랜드' },
+              { name: 'Chemists\' Own Paracetamol', note: '약국 자체 저렴한 동일 성분' }
+            ],
+            child: [
+              { name: 'Children\'s Panadol (1-5 yrs / 5-12 yrs)', note: '어린이용 해열 시럽 (연령별 선택)' },
+              { name: 'Dymadon Kids Suspension', note: '딸기·오렌지맛 어린이 해열 시럽' }
+            ]
+          },
+          us: {
+            where: '마트·약국 일반 매대',
+            adult: [
+              { name: 'Tylenol Extra Strength (500mg)', note: '가장 흔한 대표 브랜드' },
+              { name: 'CVS / Walgreens Acetaminophen', note: '약국 자체 동일 성분 (저렴함)' },
+              { name: 'Equate Acetaminophen', note: '월마트 동일 성분 제품' }
+            ],
+            child: [
+              { name: 'Children\'s Tylenol Oral Suspension', note: '어린이용 액상 시럽' },
+              { name: 'Infants\' Tylenol (주사기형)', note: '영유아용 고농축 드롭형' }
+            ]
+          },
+          uk: {
+            where: '약국·슈퍼마켓 (1회 2팩 구매 제한)',
+            adult: [
+              { name: 'Panadol Advance 500mg', note: '대표 브랜드' },
+              { name: 'Boots Paracetamol 500mg', note: '부츠 약국 동일 성분' },
+              { name: 'Tesco / Sainsbury\'s Paracetamol', note: '슈퍼마켓 저렴한 동일 성분' }
+            ],
+            child: [
+              { name: 'Calpol Infant Suspension (2+ months)', note: '영국 국민 어린이 해열 시럽' },
+              { name: 'Calpol SixPlus (6+ years)', note: '6세 이상 어린이용 시럽' }
+            ]
+          },
+          jp: {
+            where: '드럭스토어',
+            adult: [
+              { name: 'ロキソニンS (록소닌S)', note: '진통·소염 효과 빠름 (약사 확인 후 구매)' },
+              { name: 'タイレノールA (타이레놀A)', note: '위장 부담 적은 아세트아미노펜 단일제' },
+              { name: 'カロナール系 / バファリンルナJ', note: '순한 해열·진통제' }
+            ],
+            child: [
+              { name: 'キッズバファリンシロップS', note: '3개월~7세 미만 어린이 해열 시럽' },
+              { name: '小児用バファリンCII', note: '3세~15세 미만 어린이용 알약' }
+            ]
+          }
+        }
+      },
+      {
+        id: 'brufen', category: 'pain', name: '부루펜·애드빌', subtitle: '몸살·근육통·염증', emoji: '🔥',
+        ingredient: 'Ibuprofen 200mg / 400mg (소염진통제)',
+        dosageAdult: '식후 1회 200~400mg, 6~8시간 간격 복용 (공복 복용 피하기)',
+        dosageChild: '생후 6개월 이상 어린이용 이부프로펜 시럽을 체중(kg) 눈금에 맞춰 복용',
+        warning: '위장 장애가 있거나 공복일 땐 속쓰림 유발 · 뎅기열 의심 지역에선 복용 금지',
+        symptomEn: 'Body aches, inflammation, joint/muscle pain, or high fever (NSAID)',
+        local: {
+          au: {
+            where: '마트(Coles·Woolworths)·약국',
+            adult: [
+              { name: 'Nurofen Zavance 256mg', note: '가장 흔한 대표 소염진통제' },
+              { name: 'Advil Liquid Capsules 200mg', note: '흡수 빠른 액상 캡슐' },
+              { name: 'Chemists\' Own Ibuprofen', note: '약국 자체 동일 성분' }
+            ],
+            child: [
+              { name: 'Nurofen for Children (3mths-5yrs / 5-12yrs)', note: '호주 대표 어린이 소염해열 시럽' }
+            ]
+          },
+          us: {
+            where: '마트·약국 일반 매대',
+            adult: [
+              { name: 'Advil Liqui-Gels 200mg', note: '미국 대표 소염진통제' },
+              { name: 'Motrin IB 200mg', note: '이부프로펜 대표 브랜드' },
+              { name: 'CVS / Walgreens Ibuprofen', note: '저렴한 동일 성분 제품' }
+            ],
+            child: [
+              { name: 'Children\'s Motrin / Advil Suspension', note: '어린이용 이부프로펜 시럽' }
+            ]
+          },
+          uk: {
+            where: '약국·슈퍼마켓',
+            adult: [
+              { name: 'Nurofen Express 200mg', note: '대표 소염진통제' },
+              { name: 'Boots Ibuprofen 200mg', note: '부츠 약국 동일 성분' }
+            ],
+            child: [
+              { name: 'Nurofen for Children Oral Suspension', note: '어린이용 소염해열 시럽' }
+            ]
+          },
+          jp: {
+            where: '드럭스토어',
+            adult: [
+              { name: 'イブA錠 / イブクイック (이브)', note: '일본 대표 이부프로펜 진통제' },
+              { name: 'リングルアイビー (링글 아이비)', note: '액상 캡슐 이부프로펜' }
+            ],
+            child: [
+              { name: '일본은 15세 미만 이부프로펜 일반약 금지', note: '어린이는 타이레놀(아세트아미노펜) 계열만 사용하세요' }
+            ]
+          }
+        }
+      },
+      // 감기·목·코
+      {
+        id: 'pancold', category: 'cold', name: '판콜·판피린', subtitle: '종합감기·몸살·오한', emoji: '🤧',
+        ingredient: 'Paracetamol + Phenylephrine + Chlorpheniramine',
+        dosageAdult: '식후 1회 용량 복용, 하루 3회 (졸음 유발 가능)',
+        dosageChild: '어린이용 종합감기약은 연령 제한이 엄격하므로 약사에게 나이 확인 필수',
+        warning: '타이레놀(Paracetamol) 성분이 이미 들어있으므로 타이레놀과 동시 복용 금지',
+        symptomEn: 'Common cold, chills, runny nose, sneezing, and body aches',
+        local: {
+          au: {
+            where: '마트·약국 감기 코너',
+            adult: [
+              { name: 'Codral Cold & Flu (Day & Night)', note: '낮엔 안 졸리고 밤엔 재워주는 종합감기약' },
+              { name: 'Lemsip Max Cold & Flu Hot Drink', note: '따뜻한 물에 타 마시는 레몬맛 감기차 (판콜 느낌)' },
+              { name: 'Sudafed PE Sinus + Pain Relief', note: '코막힘·두통 동반 감기약' }
+            ],
+            child: [
+              { name: '6세 미만 종합감기약 복용 금지 (호주 규정)', note: '해열 시럽(Children\'s Panadol)과 식염수 코 스프레이(Fess)만 사용하세요' }
+            ]
+          },
+          us: {
+            where: '마트·약국 일반 매대',
+            adult: [
+              { name: 'DayQuil & NyQuil Severe Cold & Flu', note: '미국 국민 낮/밤 종합감기약' },
+              { name: 'Theraflu Severe Cold & Flu Packets', note: '따뜻한 물에 타 마시는 감기약' },
+              { name: 'Mucinex Fast-Max Cold & Flu', note: '가래·기침·몸살 동반 종합감기약' }
+            ],
+            child: [
+              { name: 'Children\'s Mucinex / Dimetapp (6+ yrs)', note: '6세 이상 어린이용 감기 시럽 (약사 확인)' }
+            ]
+          },
+          uk: {
+            where: '약국·슈퍼마켓',
+            adult: [
+              { name: 'Lemsip Max All in One', note: '따뜻한 물에 타 마시는 종합감기약' },
+              { name: 'Beechams All In One Liquid', note: '액상형 종합감기약' }
+            ],
+            child: [
+              { name: '6세 미만 종합감기약 사용 금지', note: '어린이용 Calpol(해열) + 식염수 비강 스프레이 권장' }
+            ]
+          },
+          jp: {
+            where: '드럭스토어',
+            adult: [
+              { name: 'パブロンゴールドA (파브론 골드A)', note: '일본 국민 종합감기약 (가루/알약)' },
+              { name: 'ルルアタックEX (루루 어택 EX)', note: '목감기·열감기 특화 종합감기약' }
+            ],
+            child: [
+              { name: 'パブロンキッズかぜシロップ (3개월~6세)', note: '어린이용 종합감기 시럽' }
+            ]
+          }
+        }
+      },
+      {
+        id: 'strepsils', category: 'cold', name: '스트렙실·목감기', subtitle: '인후통·목 따가움', emoji: '🗣️',
+        ingredient: 'Flurbiprofen / Benzydamine / Lidocaine (목 소염·마취)',
+        dosageAdult: '사탕처럼 천천히 녹여 먹거나 목 안쪽에 2~3회 분사',
+        dosageChild: '사탕형 트로키는 질식 위험이 있어 6세 이상만 복용 (어린이는 스프레이/시럽)',
+        warning: '씹어 삼키지 말고 입안에서 천천히 녹여야 목 점막에 약효가 전달됨',
+        symptomEn: 'Sore throat, painful swallowing, throat inflammation',
+        local: {
+          au: {
+            where: '마트·약국 목감기 코너',
+            adult: [
+              { name: 'Strepsils Plus Anaesthetic Lozenges', note: '목 따가움을 즉시 가라앉히는 사탕형 트로키' },
+              { name: 'Difflam Plus Sore Throat Spray', note: '목 안쪽에 직접 뿌리는 소염·진통 스프레이' },
+              { name: 'Betadine Sore Throat Gargle', note: '목 소독 가글액' }
+            ],
+            child: [
+              { name: 'Difflam Kids Sore Throat Spray (6+ yrs)', note: '6세 이상 어린이용 목 스프레이' },
+              { name: 'Strepsils Soothing Honey & Lemon (6+ yrs)', note: '6세 이상 순한 꿀·레몬 목캔디' }
+            ]
+          },
+          us: {
+            where: '마트·약국',
+            adult: [
+              { name: 'Cepacol Extra Strength Lozenges', note: '인후통 완화 사탕형 약' },
+              { name: 'Chloraseptic Sore Throat Spray', note: '목 통증 완화 스프레이' }
+            ],
+            child: [
+              { name: 'Chloraseptic Kids Throat Spray (3+ yrs)', note: '3세 이상 어린이용 목 스프레이' }
+            ]
+          },
+          uk: {
+            where: '약국·슈퍼마켓',
+            adult: [
+              { name: 'Strepsils Intensive Honey & Lemon', note: '소염 성분 포함 인후통 트로키' },
+              { name: 'Difflam Spray', note: '목 소염 스프레이' }
+            ],
+            child: [
+              { name: 'Strepsils Strawberry Sugar Free (6+ yrs)', note: '6세 이상 어린이용 목캔디' }
+            ]
+          },
+          jp: {
+            where: '드럭스토어',
+            adult: [
+              { name: 'ペラックT錠 (페락T정)', note: '목 붓고 따가울 때 먹는 일본 대표 인후통약' },
+              { name: 'のどぬーるスプレー (노도누루 스프레이)', note: '목 환부에 직접 뿌리는 소독 스프레이' }
+            ],
+            child: [
+              { name: 'のどぬーるスプレーキッズC (2세+)', note: '2세 이상 어린이용 딸기맛 목 스프레이' }
+            ]
+          }
+        }
+      },
+      {
+        id: 'zyrtec', category: 'cold', name: '지르텍·코감기', subtitle: '비염·재채기·두드러기', emoji: '🌼',
+        ingredient: 'Cetirizine 10mg / Loratadine 10mg (항히스타민제)',
+        dosageAdult: '하루 1회 1정 복용 (24시간 지속, 비교적 졸음 적음)',
+        dosageChild: '어린이용 물약(Cetirizine 시럽)을 연령·체중에 맞춰 하루 1~2회 복용',
+        warning: '꽃가루 알레르기, 음식·벌레 물림 두드러기 가려움에도 동일하게 사용',
+        symptomEn: 'Allergic rhinitis, sneezing, runny nose, or itchy hives',
+        local: {
+          au: {
+            where: '마트·약국 알레르기 코너',
+            adult: [
+              { name: 'Zyrtec Rapid Acting (Cetirizine 10mg)', note: '한국 지르텍과 100% 동일 제품' },
+              { name: 'Claratyne (Loratadine 10mg)', note: '낮에도 졸음이 거의 없는 알레르기약' },
+              { name: 'Telfast 180mg (Fexofenadine)', note: '심한 비염·두드러기용 비졸음 항히스타민제' }
+            ],
+            child: [
+              { name: 'Zyrtec Kids Oral Liquid (1+ yrs)', note: '1세 이상 어린이용 알레르기·두드러기 시럽' },
+              { name: 'Claratyne Kids Syrup (2+ yrs)', note: '2세 이상 졸음 적은 어린이 알레르기 시럽' }
+            ]
+          },
+          us: {
+            where: '마트·약국',
+            adult: [
+              { name: 'Zyrtec 24 Hour Allergy Tablets', note: '지르텍 동일 제품' },
+              { name: 'Claritin 24 Hour Non-Drowsy', note: '졸음 적은 알레르기약' }
+            ],
+            child: [
+              { name: 'Children\'s Zyrtec / Claritin Syrup (2+ yrs)', note: '어린이용 알레르기·두드러기 물약' }
+            ]
+          },
+          uk: {
+            where: '약국·슈퍼마켓',
+            adult: [
+              { name: 'Piriteze Allergy Tablets (Cetirizine)', note: '지르텍 동일 성분' },
+              { name: 'Clarityn Allergy Tablets', note: '졸음 적은 알레르기약' }
+            ],
+            child: [
+              { name: 'Piriteze Children\'s Hayfever Syrup (2+ yrs)', note: '어린이용 알레르기 시럽' }
+            ]
+          },
+          jp: {
+            where: '드럭스토어',
+            adult: [
+              { name: 'アレグラFX (알레그라 FX)', note: '졸음 없는 일본 대표 비염·알레르기약' },
+              { name: 'コンタック鼻炎Z (콘택 비염Z)', note: '지르텍과 동일한 세티리진 성분' }
+            ],
+            child: [
+              { name: 'アレグラFXジュニア (7~14세)', note: '어린이용 비염·꽃가루 알레르기약' }
+            ]
+          }
+        }
+      },
+      // 소화·배탈
+      {
+        id: 'festal', category: 'stomach', name: '훼스탈·베아제', subtitle: '과식·체함·소화불량', emoji: '🍽️',
+        ingredient: 'Digestive Enzymes + Simethicone (소화효소·가스제거)',
+        dosageAdult: '식후 1~2정 물과 함께 복용',
+        dosageChild: '어린이 소화불량은 유산균·매실차 또는 약사 확인 어린이용 위장약 사용',
+        warning: '서구권은 한국식 종합소화효소보다 위산·가스 완화제(제산제)가 훨씬 흔함',
+        symptomEn: 'Indigestion, bloating, gas, heavy stomach after overeating',
+        local: {
+          au: {
+            where: '마트·약국 소화제 코너 (또는 한인마트)',
+            adult: [
+              { name: 'De-Gas Capsules (Simethicone)', note: '배에 가스 차고 더부룩할 때 즉시 완화' },
+              { name: 'Iberogast Herbal Drops', note: '체함·더부룩함·복부 팽만에 효과 좋은 천연 소화액' },
+              { name: 'Enzymedica Digest Gold (약국·건강식품점)', note: '한국 훼스탈과 같은 종합 소화효소제' }
+            ],
+            child: [
+              { name: 'Infacol Wind Drops / Brauer Stomach Calm', note: '어린이 배앓이·가스 완화 액상제 (약사 확인)' }
+            ]
+          },
+          us: {
+            where: '마트·약국',
+            adult: [
+              { name: 'Gas-X Extra Strength (Simethicone)', note: '더부룩함·가스 제거 대표약' },
+              { name: 'NOW Super Enzymes / Digest Gold', note: '종합 소화효소제 (훼스탈 유사)' }
+            ],
+            child: [
+              { name: 'Children\'s Mylanta / Pepto Kids', note: '어린이용 배탈·소화불량 츄어블 (약사 확인)' }
+            ]
+          },
+          uk: {
+            where: '약국·슈퍼마켓',
+            adult: [
+              { name: 'Wind-eze Gel Caps', note: '가스·더부룩함 완화제' },
+              { name: 'Rennie Deflatine', note: '소화불량·가스 동시 완화 츄어블' }
+            ],
+            child: [
+              { name: 'Infacol Oral Suspension', note: '영유아·어린이 배앓이·가스 완화제' }
+            ]
+          },
+          jp: {
+            where: '드럭스토어',
+            adult: [
+              { name: 'キャベジンコーワα (카베진 알파)', note: '양배추 성분 위장·소화 기능 개선제' },
+              { name: '太田胃散 (오타이산)', note: '과식·체함·속더부룩함 가루 소화제' }
+            ],
+            child: [
+              { name: '新ビオフェルミンS細粒 (3개월+)', note: '어린이도 먹는 장·소화 정장제' }
+            ]
+          }
+        }
+      },
+      {
+        id: 'gaviscon', category: 'stomach', name: '개비스콘·속쓰림', subtitle: '위산역류·신물·위통', emoji: '🌋',
+        ingredient: 'Sodium Alginate / Famotidine / Esomeprazole (제산제)',
+        dosageAdult: '식후 및 취침 전 10~20ml 복용 또는 1~2정 씹어서 복용',
+        dosageChild: '12세 미만 어린이는 의사·약사 상담 후 전용 제산제 사용',
+        warning: '다른 약과 동시에 먹으면 흡수를 방해하므로 2시간 간격 두고 복용',
+        symptomEn: 'Heartburn, acid reflux, burning stomach pain',
+        local: {
+          au: {
+            where: '마트·약국 일반 매대',
+            adult: [
+              { name: 'Gaviscon Dual Action Liquid / Tablets', note: '한국 개비스콘과 동일 제품 (즉각 속쓰림 완화)' },
+              { name: 'Mylanta Original Antacid', note: '위산 중화 액상·츄어블 제산제' },
+              { name: 'Nexium 24HR (Esomeprazole)', note: '심한 역류성 식도염용 위산 억제제' }
+            ],
+            child: [
+              { name: '12세 미만은 약사·GP 상담 필수', note: '어린이용 소아 제산제는 약국에서 체중 확인 후 구매하세요' }
+            ]
+          },
+          us: {
+            where: '마트·약국',
+            adult: [
+              { name: 'Tums Ultra Strength Chewable', note: '씹어 먹는 대표 제산제' },
+              { name: 'Pepcid AC (Famotidine 20mg)', note: '위산 분비 차단 위장약' },
+              { name: 'Gaviscon Extra Strength', note: '역류성 속쓰림 완화제' }
+            ],
+            child: [
+              { name: 'Children\'s Pepto Antacid (2+ yrs)', note: '2세 이상 어린이용 씹어 먹는 제산제' }
+            ]
+          },
+          uk: {
+            where: '약국·슈퍼마켓',
+            adult: [
+              { name: 'Gaviscon Advance Liquid', note: '영국 오리지널 개비스콘' },
+              { name: 'Rennie Peppermint Tablets', note: '속쓰림 완화 츄어블' }
+            ],
+            child: [
+              { name: '12세 미만 약사 상담 필수', note: '소아용 제품은 약사 확인 후 복용' }
+            ]
+          },
+          jp: {
+            where: '드럭스토어',
+            adult: [
+              { name: 'ガスター10 (가스터10)', note: '위산 역류·속쓰림 차단약 (약사 확인 구매)' },
+              { name: 'スクラート胃腸薬S', note: '위 점막 보호·속쓰림 완화제' }
+            ],
+            child: [
+              { name: '15세 미만 가스터10 금지', note: '소아용 위장약은 약사 상담 후 구매' }
+            ]
+          }
+        }
+      },
+      {
+        id: 'imodium', category: 'stomach', name: '정로환·지사제', subtitle: '급성 설사·물갈이 배탈', emoji: '🚽',
+        ingredient: 'Loperamide 2mg / Oral Rehydration Salts (지사제·수액)',
+        dosageAdult: '성인 첫 회 2정(4mg), 이후 설사할 때마다 1정씩 (하루 최대 8정)',
+        dosageChild: '12세 미만 어린이는 강제 지사제(로페라마이드) 금지! 경구수액제(Hydralyte)로 탈수 예방',
+        warning: '혈변·고열이 동반된 식중독 설사에는 지사제 먹지 말고 즉시 병원 방문',
+        symptomEn: 'Acute diarrhea, watery stool, traveler\'s stomach upset',
+        local: {
+          au: {
+            where: '마트·약국 일반 매대',
+            adult: [
+              { name: 'Imodium Capsules (Loperamide 2mg)', note: '급성 설사를 빠르게 멈추는 대표 지사제' },
+              { name: 'Gastro-Stop Capsules', note: '이모듐과 동일 성분 호주 브랜드' },
+              { name: 'Hydralyte Effervescent / Ice Blocks', note: '설사·구토 시 필수 전해질 수액제' }
+            ],
+            child: [
+              { name: 'Hydralyte Kids Ice Blocks / Liquid', note: '어린이 설사 시 지사제 대신 먹이는 전해질 수분 보충제' }
+            ]
+          },
+          us: {
+            where: '마트·약국',
+            adult: [
+              { name: 'Imodium A-D Caplets', note: '급성 설사 대표 지사제' },
+              { name: 'Pepto-Bismol Liquid / Chewables', note: '배탈·메스꺼움·설사 동시 완화' }
+            ],
+            child: [
+              { name: 'Pedialyte Electrolyte Solution / Popsicles', note: '어린이 설사·탈수 방지 전해질 음료' }
+            ]
+          },
+          uk: {
+            where: '약국·슈퍼마켓',
+            adult: [
+              { name: 'Imodium Instants', note: '물 없이 녹여 먹는 급성 지사제' },
+              { name: 'Dioralyte Sachets', note: '탈수 방지 경구수액 가루' }
+            ],
+            child: [
+              { name: 'Dioralyte Relief / Paediatric', note: '어린이용 경구수액제' }
+            ]
+          },
+          jp: {
+            where: '드럭스토어',
+            adult: [
+              { name: 'ストッパ下痢止めEX (스토파 EX)', note: '물 없이 먹는 급성 지사제' },
+              { name: '正露丸 (세이로간/정로환)', note: '물갈이·식중독 초기 지사제' },
+              { name: 'OS-1 (오에스원)', note: '약국 경구수액제 (탈수 방지)' }
+            ],
+            child: [
+              { name: 'ストッパ下痢止めEX 小中学生用 (5~14세)', note: '5세 이상 어린이용 물 없이 먹는 지사제' },
+              { name: 'OS-1 ゼリー (경구수액 젤리)', note: '어린이도 마시기 쉬운 탈수 방지 젤리' }
+            ]
+          }
+        }
+      },
+      {
+        id: 'dulcolax', category: 'stomach', name: '둘코락스·변비약', subtitle: '변비·배변 곤란', emoji: '🌿',
+        ingredient: 'Docusate Sodium + Senna / Bisacodyl / Macrogol',
+        dosageAdult: '취침 전 1~2정 물과 함께 복용 (보통 6~12시간 후 배변 효과)',
+        dosageChild: '어린이는 자극성 변비약 대신 물·식이섬유 또는 약사 확인 어린이용 시럽 사용',
+        warning: '복통·구토가 심할 땐 복용 금지 · 충분한 물과 함께 드세요',
+        symptomEn: 'Constipation (difficulty having a bowel movement for several days)',
+        local: {
+          au: {
+            where: '약국 소화·변비 코너',
+            adult: [
+              { name: 'Coloxyl with Senna', note: '호주 대표 변비 완화제 (연화제 + 식물성 성분)' },
+              { name: 'Dulcolax Tablets (Bisacodyl)', note: '한국 둘코락스와 동일 제품' },
+              { name: 'Movicol Sachets (Macrogol)', note: '복통 없이 부드럽게 배변 돕는 가루약' }
+            ],
+            child: [
+              { name: 'Movicol Junior / Osmolax Kids', note: '어린이 변비에 안전한 삼투압성 가루약 (약사 문의)' }
+            ]
+          },
+          us: {
+            where: '마트·약국 소화제 코너',
+            adult: [
+              { name: 'Dulcolax Overnight Relief', note: '둘코락스 동일 제품' },
+              { name: 'MiraLAX Powder (Polyethylene Glycol)', note: '물·음료에 타 먹는 순한 변비약' },
+              { name: 'Colace Stool Softener', note: '대변을 부드럽게 해주는 변비 완화제' }
+            ],
+            child: [
+              { name: 'Pedia-Lax Chewable / Liquid', note: '어린이용 변비 완화제 (약사 상담)' }
+            ]
+          },
+          uk: {
+            where: '약국·슈퍼마켓',
+            adult: [
+              { name: 'Dulcolax Twelve Plus', note: '둘코락스 동일 제품' },
+              { name: 'Senokot Tablets', note: '영국 대표 식물성 변비약' }
+            ],
+            child: [
+              { name: 'Movicol Paediatric', note: '어린이용 변비약 (약사 상담)' }
+            ]
+          },
+          jp: {
+            where: '드럭스토어',
+            adult: [
+              { name: 'コーラック (코락쿠)', note: '일본 대표 둘코락스 계열 변비약' },
+              { name: '酸化マグネシウムE便秘薬', note: '배 아프지 않고 습관성 적은 마그네슘 변비약' }
+            ],
+            child: [
+              { name: '酸化マグネシウムE便秘薬 (5세+)', note: '5세 이상 어린이도 복용 가능한 순한 변비약' }
+            ]
+          }
+        }
+      },
+      // 연고·파스·눈
+      {
+        id: 'fucidin', category: 'skin', name: '후시딘·마데카솔', subtitle: '상처 소독·항생제 연고', emoji: '🩹',
+        ingredient: 'Fusidic Acid / Mupirocin / Antiseptic (소독·상처치유)',
+        dosageAdult: '상처 부위를 깨끗이 씻은 후 하루 2~3회 얇게 도포',
+        dosageChild: '어린이도 동일하게 상처 부위에 얇게 발라주세요',
+        warning: '호주·유럽에서는 항생제 연고가 처방전 필요 품목이라 소독·재생 연고를 사용',
+        symptomEn: 'Minor cut, scrape, wound infection prevention ointment',
+        local: {
+          au: {
+            where: '마트·약국 상처치료 코너',
+            adult: [
+              { name: 'Betadine Antiseptic Ointment', note: '한국 빨간약(포비돈) 연고 타입, 곪음 방지' },
+              { name: 'Bepanthen First Aid Cream', note: '소독 + 피부 재생 (마데카솔과 가장 유사)' },
+              { name: 'Savlon Antiseptic Cream', note: '가벼운 찰과상·벌레 물린 데 범용 연고' }
+            ],
+            child: [
+              { name: 'Bepanthen First Aid / Nappy Rash Cream', note: '아이 상처·기저귀 발진에 순한 재생 연고' },
+              { name: 'Betadine Antiseptic Liquid Spray', note: '따갑지 않게 뿌리는 어린이 상처 소독약' }
+            ]
+          },
+          us: {
+            where: '마트·약국 일반 매대',
+            adult: [
+              { name: 'Neosporin Original Ointment', note: '미국 국민 항생제 상처 연고 (후시딘 유사)' },
+              { name: 'Polysporin First Aid Ointment', note: '알레르기 반응 적은 항생제 연고' },
+              { name: 'Aquaphor Healing Ointment', note: '상처 아물 때 새살 돋는 보습·재생 연고' }
+            ],
+            child: [
+              { name: 'Neosporin + Pain Relief Kids', note: '어린이 상처 감염 방지 연고' }
+            ]
+          },
+          uk: {
+            where: '약국·슈퍼마켓',
+            adult: [
+              { name: 'Savlon Antiseptic Cream', note: '영국 국민 상처 소독 연고' },
+              { name: 'Germolene Antiseptic Cream', note: '통증 완화 성분 포함된 상처 연고' }
+            ],
+            child: [
+              { name: 'Bepanthen Ointment / Sudocrem', note: '아이 피부 진정·상처 보호 연고' }
+            ]
+          },
+          jp: {
+            where: '드럭스토어',
+            adult: [
+              { name: 'テラマイシン軟膏a (테라마이신)', note: '화농·곪은 상처 항생제 연고' },
+              { name: 'オロナインH軟膏 (오로나인 연고)', note: '일본 가정 상비 만능 상처·화상 연고' }
+            ],
+            child: [
+              { name: 'マキロンs (마키론 액/연고)', note: '어린이 상처 소독·살균제' }
+            ]
+          }
+        }
+      },
+      {
+        id: 'pas', category: 'skin', name: '동전파스·케토톱', subtitle: '근육통·담·염좌', emoji: '💪',
+        ingredient: 'Diclofenac / Ibuprofen Gel / Menthol Patch',
+        dosageAdult: '통증 부위에 하루 2~3회 겔을 바르거나 패치 부착',
+        dosageChild: '12세 미만 어린이는 소염진통 겔·파스 대신 냉찜질/온찜질 권장',
+        warning: '서구권 약국은 붙이는 파스보다 바르는 겔(Voltaren)이 훨씬 효과적이고 다양함',
+        symptomEn: 'Muscle pain, sprained ankle, stiff neck or back pain',
+        local: {
+          au: {
+            where: '마트·약국 통증 코너',
+            adult: [
+              { name: 'Voltaren Osteo Gel 12 Hourly', note: '관절·허리·담 통증에 가장 효과적인 바르는 파스' },
+              { name: 'Deep Heat / Fisiocrem Solugel', note: '근육 뭉침 풀어주는 온열·천연 크림' },
+              { name: 'Salonpas Pain Relief Patches', note: '붙이는 파스 (약국·아시안마트 판매)' }
+            ],
+            child: [
+              { name: '12세 미만 소염진통 겔 사용 금지', note: '타박상·삠에는 냉찜질 팩(Cold Pack)을 사용하세요' }
+            ]
+          },
+          us: {
+            where: '마트·약국',
+            adult: [
+              { name: 'Salonpas Lidocaine / Pain Patch', note: '붙이는 파스 대표 제품' },
+              { name: 'Voltaren Arthritis Pain Gel', note: '바르는 소염진통 파스 겔' },
+              { name: 'Biofreeze Pain Relief Gel', note: '시원한 쿨링 근육통 겔' }
+            ],
+            child: [
+              { name: '12세 미만 소염진통 파스 사용 자제', note: '냉찜질 팩(Ice Pack) 권장' }
+            ]
+          },
+          uk: {
+            where: '약국·슈퍼마켓',
+            adult: [
+              { name: 'Voltarol 12 Hour Joint Pain Gel', note: '바르는 소염진통 겔' },
+              { name: 'Deep Heat / Deep Freeze Patch', note: '붙이는 온열·쿨링 파스' }
+            ],
+            child: [
+              { name: '12세 미만 사용 자제', note: '냉찜질 팩 권장' }
+            ]
+          },
+          jp: {
+            where: '드럭스토어',
+            adult: [
+              { name: 'ロイヒつぼ膏 (동전파스)', note: '목·어깨 결림에 붙이는 온열 동전파스' },
+              { name: 'サロンパスAe (샤론파스)', note: '근육통·염좌 기본 파스' },
+              { name: 'ボルタレンEXゲル (볼타렌 겔)', note: '강한 소염진통 바르는 겔' }
+            ],
+            child: [
+              { name: '15세 미만 볼타렌 사용 금지', note: '어린이는 냉각시트(열패치)만 사용' }
+            ]
+          }
+        }
+      },
+      {
+        id: 'eyedrops', category: 'skin', name: '인공눈물·결막염', subtitle: '안구건조·눈 충혈', emoji: '👁️',
+        ingredient: 'Carmellose / Sodium Hyaluronate (무방부제 일회용)',
+        dosageAdult: '건조할 때마다 1~2방울 점안 (렌즈 착용 시 무방부제 확인)',
+        dosageChild: '어린이 눈 충혈·가려움은 무방부제 식염수 또는 약사 확인 알레르기 안약',
+        warning: '눈곱이 심하게 끼고 가려운 알레르기 결막염은 약국 전용 안약 문의',
+        symptomEn: 'Dry eyes, eye irritation, or allergic itchy eyes',
+        local: {
+          au: {
+            where: '마트·약국 안약 코너',
+            adult: [
+              { name: 'Systane Ultra Unit Dose (무방부제)', note: '일회용 개별 포장 인공눈물' },
+              { name: 'Refresh Tears Plus', note: '보습력 좋은 인공눈물' },
+              { name: 'Zaditen Eye Drops (알레르기 안약)', note: '꽃가루·비염으로 눈이 간지러울 때' }
+            ],
+            child: [
+              { name: 'Zaditen Eye Drops (3+ years)', note: '3세 이상 어린이 알레르기 눈 가려움 안약' },
+              { name: 'Fess / Saline Eye Wipes', note: '어린이 눈곱·이물질 닦아내는 멸균 티슈' }
+            ]
+          },
+          us: {
+            where: '마트·약국',
+            adult: [
+              { name: 'Refresh Relieva Preservative-Free', note: '무방부제 일회용 인공눈물' },
+              { name: 'Systane Ultra Lubricant Eye Drops', note: '안구건조증 대표 인공눈물' },
+              { name: 'Pataday Once Daily Relief', note: '알레르기 눈 가려움 전용 안약' }
+            ],
+            child: [
+              { name: 'Pataday / Zaditor Eye Drops (3+ yrs)', note: '3세 이상 어린이 알레르기 안약' }
+            ]
+          },
+          uk: {
+            where: '약국·슈퍼마켓',
+            adult: [
+              { name: 'Hycosan Extra / Fresh', note: '무방부제 히알루론산 인공눈물' },
+              { name: 'Optrex Hayfever Relief Eye Drops', note: '알레르기 충혈·가려움 안약' }
+            ],
+            child: [
+              { name: 'Optrex Infected Eye Drops (2+ yrs)', note: '2세 이상 어린이 세균성 결막염 안약 (약사 문의)' }
+            ]
+          },
+          jp: {
+            where: '드럭스토어',
+            adult: [
+              { name: 'ソフトサンティア (소프트 산티아)', note: '방부제 없는 인공눈물 (렌즈 가능)' },
+              { name: 'ロートアルガード (로토 알가드)', note: '꽃가루·알레르기 눈 가려움 안약' }
+            ],
+            child: [
+              { name: 'ロートこどもソフト (4개월+)', note: '어린이 눈 충혈·수영 후 순한 안약' }
+            ]
+          }
+        }
+      }
+    ];
+
+    // =========================================================================
+    // 2. 앱 전역 상태 및 드래그 스크롤
+    // =========================================================================
+    let state = {
+      country: COUNTRIES[0],
+      countryFilter: '',
+      patientType: 'adult',
+      hasAllergy: false,
+      allergyDetail: '',
+      fontPercent: 124,
+      selectedMedId: 'tylenol',
+      selectedCategory: 'all',
+      searchQuery: '',
+      medGridExpanded: false,
+      activeTab: 'guide',
+      isAskingAI: false,
+      user: null,
+      dailyQuota: {
+        date: new Date().toISOString().slice(0, 10),
+        used: 0
+      },
+      chatHistory: [],
+      customPharmacistContext: null
+    };
+
+    let didDragScroll = false;
+
+    function enableDragToScroll(el) {
+      if (!el) return;
+      let isDown = false;
+      let startX = 0;
+      let scrollLeft = 0;
+
+      el.addEventListener('mousedown', (e) => {
+        isDown = true;
+        didDragScroll = false;
+        el.classList.add('is-dragging');
+        startX = e.pageX - el.offsetLeft;
+        scrollLeft = el.scrollLeft;
+      });
+      el.addEventListener('mouseleave', () => { isDown = false; el.classList.remove('is-dragging'); });
+      el.addEventListener('mouseup', () => {
+        isDown = false;
+        el.classList.remove('is-dragging');
+        setTimeout(() => { didDragScroll = false; }, 50);
+      });
+      el.addEventListener('mousemove', (e) => {
+        if (!isDown) return;
+        e.preventDefault();
+        const x = e.pageX - el.offsetLeft;
+        const walk = (x - startX) * 1.4;
+        if (Math.abs(walk) > 5) didDragScroll = true;
+        el.scrollLeft = scrollLeft - walk;
+      });
+    }
+
+    function scrollMedList(delta) {
+      const grid = document.getElementById('med-grid');
+      if (grid) grid.scrollBy({ left: delta, behavior: 'smooth' });
+    }
+
+    // =========================================================================
+    // 3. 상비약 선택 및 현지 매칭 카드 렌더링
+    // =========================================================================
+    function getCurrentCountry() {
+      return state.country || COUNTRIES[0];
+    }
+
+    function getCountryPhrase() {
+      const country = getCurrentCountry();
+      return PHARMACIST_PHRASES[country.lang] || PHARMACIST_PHRASES.en;
+    }
+
+    function getLocalMedInfo(med, country) {
+      if (med.local[country.id]) return med.local[country.id];
+      if (country.localPool && med.local[country.localPool]) return med.local[country.localPool];
+      // 그 외 전 세계 모든 국가용 국제 표준 성분·브랜드 매칭
+      const mainChem = med.ingredient.split('(')[0].trim();
+      return {
+        where: `${country.name} 현지 약국 (Pharmacy / Farmacia / Apotheke)`,
+        adult: [
+          { name: `${mainChem} (성인용)`, note: '전 세계 약국 공통 국제 일반명(성분명)으로 요청하세요' },
+          ...(med.local.us?.adult?.slice(0, 1) || [])
+        ],
+        child: [
+          { name: `Pediatric / Children's ${mainChem.split('/')[0].trim()}`, note: '어린이용 시럽/현탁액(Oral Suspension)으로 약사에게 요청하세요' }
+        ]
+      };
+    }
+
+    function renderHeader() {
+      const country = getCurrentCountry();
+      const phrase = getCountryPhrase();
+      document.getElementById('header-country-flag').textContent = country.flag;
+      document.getElementById('header-country-summary').textContent = `${country.name} · 현지어: ${phrase.langName}`;
+      const langBadge = document.getElementById('settings-lang-badge');
+      if (langBadge) langBadge.textContent = `약사 카드: ${phrase.langName}`;
+    }
+
+    function getOcrLeft() {
+  if (!state.user) return 0;
+  const d = new Date().toISOString().slice(0, 10);
+  if (!state.ocrQuota || state.ocrQuota.date !== d) state.ocrQuota = { date: d, used: 0 };
+  return Math.max(0, 2 - state.ocrQuota.used);
+}
+function triggerMedCamera() {
+  if (!state.user) {
+    showToast('비로그인 상태에서는 약 봉투·처방전 카메라 OCR을 이용할 수 없습니다. 로그인해 주세요.');
+    openAuthModal();
+    return;
+  }
+  if (getOcrLeft() <= 0) {
+    showToast('오늘의 약 봉투·처방전 카메라 OCR 한도(하루 2회)를 모두 사용했습니다.');
+    return;
+  }
+  const input = document.getElementById('med-camera-input');
+  if (input) {
+    input.value = '';
+    input.click();
+  }
+}
+
+    function openNearbyOpenPharmacy() {
+      const country = getCurrentCountry();
+      const q = encodeURIComponent(`pharmacy open now ${country.name}`);
+      window.open(`https://www.google.com/maps/search/?api=1&query=${q}`, '_blank', 'noopener');
+    }
+
+    function openNearbyMedicalClinic() {
+      const country = getCurrentCountry();
+      const q = encodeURIComponent(`medical centre doctor urgent care open now ${country.name}`);
+      window.open(`https://www.google.com/maps/search/?api=1&query=${q}`, '_blank', 'noopener');
+    }
+
+    function toggleMedGridMode() {
+      state.medGridExpanded = !state.medGridExpanded;
+      document.getElementById('btn-toggle-med-view').textContent = state.medGridExpanded ? '슬라이드' : '전체보기';
+      renderMedGrid();
+    }
+
+    function handleMedSearch(q) {
+      state.searchQuery = q.trim().toLowerCase();
+      renderMedGrid();
+    }
+
+    function renderMedGrid() {
+      const grid = document.getElementById('med-grid');
+      if (!grid) return;
+      const leftBtn = document.getElementById('med-scroll-left');
+      const rightBtn = document.getElementById('med-scroll-right');
+      const countBadge = document.getElementById('med-count-badge');
+      const country = getCurrentCountry();
+
+      const filtered = MEDICINES.filter(m => {
+        const matchCat = state.selectedCategory === 'all' || m.category === state.selectedCategory;
+        const localInfo = getLocalMedInfo(m, country);
+        const allNames = [...(localInfo.adult || []), ...(localInfo.child || [])].map(i => i.name).join(' ');
+        const matchQuery = !state.searchQuery ||
+          m.name.toLowerCase().includes(state.searchQuery) ||
+          m.subtitle.toLowerCase().includes(state.searchQuery) ||
+          m.ingredient.toLowerCase().includes(state.searchQuery) ||
+          allNames.toLowerCase().includes(state.searchQuery);
+        return matchCat && matchQuery;
+      });
+
+      if (countBadge) countBadge.textContent = `${filtered.length}종`;
+
+      if (state.medGridExpanded) {
+        grid.className = 'grid grid-cols-3 gap-2 pt-1 max-h-64 overflow-y-auto';
+        if (leftBtn) leftBtn.classList.add('hidden');
+        if (rightBtn) rightBtn.classList.add('hidden');
+      } else {
+        grid.className = 'drag-scroll flex gap-1.5 overflow-x-auto no-scrollbar py-0.5 px-1 scroll-smooth';
+        if (leftBtn) leftBtn.classList.remove('hidden');
+        if (rightBtn) rightBtn.classList.remove('hidden');
+      }
+
+      if (filtered.length === 0) {
+        grid.innerHTML = `<div class="w-full text-center text-xs text-slate-400 py-5">검색된 상비약이 없습니다.</div>`;
+        return;
+      }
+
+      grid.innerHTML = filtered.map(m => {
+        const isSelected = m.id === state.selectedMedId;
+        const widthClass = state.medGridExpanded ? 'w-full' : 'min-w-[88px] shrink-0';
+        return `
+          <button
+            type="button"
+            onclick="selectMed('${m.id}')"
+            class="${widthClass} p-2 rounded-xl border text-center transition flex flex-col items-center gap-0.5 ${
+              isSelected
+                ? 'bg-medi-50 border-medi-600 ring-2 ring-medi-500/20 shadow-2xs'
+                : 'bg-slate-50/80 border-slate-200/80 hover:bg-white'
+            }"
+          >
+            <span class="text-xl pointer-events-none">${m.emoji}</span>
+            <span class="text-[11px] font-extrabold text-slate-800 truncate w-full pointer-events-none">${m.name}</span>
+            <span class="text-[9px] text-slate-500 truncate w-full pointer-events-none">${m.subtitle}</span>
+          </button>
+        `;
+      }).join('');
+    }
+
+    function selectMed(medId) {
+      if (didDragScroll) return;
+      state.selectedMedId = medId;
+      renderMedGrid();
+      renderResultCard();
+    }
+
+    function setCardAgeGroup(type) {
+      state.patientType = type;
+      saveLocalState();
+      updatePatientSettingsUI();
+      renderResultCard();
+    }
+
+    function renderResultCard() {
+      const med = MEDICINES.find(m => m.id === state.selectedMedId) || MEDICINES[0];
+      const country = getCurrentCountry();
+      const phrase = getCountryPhrase();
+      const localInfo = getLocalMedInfo(med, country);
+      const isChild = state.patientType === 'child';
+      const productList = isChild ? (localInfo.child || []) : (localInfo.adult || []);
+      const dosageText = isChild ? med.dosageChild : med.dosageAdult;
+
+      document.getElementById('result-card').innerHTML = `
+        <!-- 1. 현지 동일 성분 매칭 핵심 카드 (성인용 / 어린이용 전환 + 복수 제품 안내) -->
+        <div class="rounded-2xl p-4 border-2 border-medi-200 bg-gradient-to-br from-medi-50 to-white shadow-xs space-y-3">
+          <div class="flex items-start justify-between gap-2">
+            <div class="flex items-center gap-3 min-w-0">
+              <div class="w-12 h-12 rounded-2xl bg-white shadow-2xs border border-medi-100 flex items-center justify-center text-2xl shrink-0">
+                ${med.emoji}
+              </div>
+              <div class="min-w-0">
+                <div class="text-xs font-bold text-slate-500">${med.name} (${med.subtitle})</div>
+                <h3 class="text-base font-extrabold text-medi-900 leading-snug mt-0.5">${country.flag} ${country.name} 약국 추천 ${productList.length}종</h3>
+              </div>
+            </div>
+            <span class="px-2.5 py-1 rounded-lg bg-medi-700 text-white text-[11px] font-extrabold shrink-0">동일 성분</span>
+          </div>
+
+          <!-- 성인용 / 어린이용 즉시 전환 스위치 -->
+          <div class="grid grid-cols-2 gap-1.5 bg-white p-1 rounded-xl border border-medi-200">
+            <button
+              type="button"
+              onclick="setCardAgeGroup('adult')"
+              class="py-2 rounded-lg text-xs font-extrabold transition ${!isChild ? 'bg-medi-700 text-white shadow-2xs' : 'text-slate-600 hover:bg-slate-50'}"
+            >
+              🧑 성인용 (${(localInfo.adult || []).length}종)
+            </button>
+            <button
+              type="button"
+              onclick="setCardAgeGroup('child')"
+              class="py-2 rounded-lg text-xs font-extrabold transition ${isChild ? 'bg-amber-400 text-slate-950 shadow-2xs' : 'text-slate-600 hover:bg-slate-50'}"
+            >
+              👶 어린이용 (${(localInfo.child || []).length}종)
+            </button>
+          </div>
+
+          <!-- 매장 진열대 대조용 영문/현지 제품명 목록 -->
+          <div class="space-y-2">
+            <div class="text-xs font-extrabold text-slate-700">🏪 매장 진열대에서 찾을 제품명 (품절 시 다른 제품 선택)</div>
+            <div class="space-y-2">
+              ${productList.map((item, idx) => `
+                <div class="p-3 rounded-xl ${isChild ? 'bg-amber-50/90 border-2 border-amber-300' : 'bg-sky-50/90 border-2 border-sky-200'}">
+                  <div class="flex items-center justify-between gap-2">
+                    <span class="text-base font-extrabold text-slate-950 leading-snug">${idx + 1}. ${item.name}</span>
+                  </div>
+                  <div class="text-xs font-semibold ${isChild ? 'text-amber-950' : 'text-sky-900'} mt-0.5">${item.note}</div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+
+          <div class="bg-white rounded-xl p-3 border border-slate-200/80 space-y-1.5 text-xs">
+            <div><span class="text-slate-500 font-bold">국제 주성분명:</span> <b class="text-slate-900">${med.ingredient}</b></div>
+            <div><span class="text-slate-500 font-bold">파는 곳:</span> <span class="font-extrabold text-medi-800">${localInfo.where}</span></div>
+          </div>
+        </div>
+
+        <!-- 2. 복용법 & 주의사항 -->
+        <div class="bg-white rounded-2xl p-4 shadow-xs border border-slate-200/70 space-y-2.5">
+          <h4 class="text-xs font-extrabold text-slate-900">🩺 ${isChild ? '👶 어린이' : '🧑 성인'} 복용법 및 주의사항</h4>
+          <div class="space-y-2 text-xs leading-relaxed">
+            <div class="bg-slate-50 p-3 rounded-xl text-slate-800"><b class="text-slate-900">💊 먹는 법:</b> ${dosageText}</div>
+            <div class="bg-rose-50/90 border border-rose-200 p-3 rounded-xl text-rose-950"><b>⚠️ 주의할 점:</b> ${med.warning}</div>
+          </div>
+        </div>
+
+        <!-- 3. 하단 핵심 액션 버튼 -->
+        <div class="space-y-2">
+          <button
+            type="button"
+            onclick="openPharmacistCardModal()"
+            class="w-full py-3.5 px-3 rounded-2xl bg-amber-300 hover:bg-amber-400 active:scale-98 text-slate-900 text-sm font-extrabold shadow-xs transition"
+          >
+            🗣️ ${country.name} 약사에게 ${phrase.langName}로 보여주기
+          </button>
+
+          <button
+            type="button"
+            onclick="openAskWithContext()"
+            class="w-full py-3 px-3 rounded-2xl bg-white hover:bg-medi-50 active:scale-98 text-medi-800 border-2 border-medi-200 text-xs font-extrabold transition"
+          >
+            💬 아픈 증상 말하고 AI에게 다른 약 물어보기
+          </button>
+        </div>
+      `;
+    }
+
+    // =========================================================================
+    // 4. 현지 언어 약사 제시용 카드 모달 (AI 증상 상담 연계 + 카메라 역확인 포함)
+    // =========================================================================
+    function trAllergy(t) {
+  const c = (t || '').trim();
+  if (!c) return 'Yes (Please ask me)';
+  const m = [
+    [/페니실린|penicillin/i, 'Penicillin'],
+    [/아목시실린|amoxicillin/i, 'Amoxicillin'],
+    [/아스피린|aspirin/i, 'Aspirin'],
+    [/이부프로펜|부루펜|ibuprofen/i, 'Ibuprofen'],
+    [/타이레놀|아세트아미노펜|파라세타몰|tylenol|paracetamol/i, 'Acetaminophen / Paracetamol'],
+    [/항생제|antibiotic/i, 'Antibiotics'],
+    [/소염진통제|nsaid/i, 'NSAIDs'],
+    [/땅콩|peanut/i, 'Peanuts'],
+    [/갑각류|새우|게|shellfish/i, 'Shellfish'],
+    [/계란|달걀|egg/i, 'Eggs'],
+    [/우유|유제품|milk|dairy/i, 'Milk / Dairy']
+  ].filter(x => x[0].test(c)).map(x => x[1]);
+  if (m.length) return m.join(', ');
+  return /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/.test(c) ? 'Drug/Food allergy (Please check with me)' : c;
+}
+function openPharmacistCardModal(customContext = null) {
+      state.customPharmacistContext = customContext;
+      const country = getCurrentCountry();
+      const phrase = getCountryPhrase();
+      const isUrgentDoctor = !!customContext?.isUrgent;
+      const med = customContext?.medId
+        ? (MEDICINES.find(m => m.id === customContext.medId) || MEDICINES[0])
+        : (MEDICINES.find(m => m.id === state.selectedMedId) || MEDICINES[0]);
+
+      const localInfo = getLocalMedInfo(med, country);
+      const isChild = state.patientType === 'child';
+      const targetList = isChild ? (localInfo.child || []) : (localInfo.adult || []);
+      const mainProduct = customContext?.recommendedProduct
+        ? customContext.recommendedProduct
+        : (targetList[0] ? targetList[0].name : med.ingredient);
+
+      const symptomDisplay = customContext?.symptomEn
+        ? `${customContext.symptomEn}`
+        : med.symptomEn;
+
+      const patientText = isChild
+        ? phrase.child
+        : state.patientType === 'pregnant'
+        ? phrase.pregnant
+        : phrase.adult;
+
+      const allergyDetailClean = trAllergy(state.allergyDetail || document.getElementById('allergy-detail-input')?.value || '');
+
+      const allergyText = state.hasAllergy
+        ? `${phrase.hasAllergyPrefix}${allergyDetailClean || 'Yes (Please ask me)'}`
+        : phrase.noAllergy;
+
+      document.getElementById('pharmacist-modal-lang-tag').textContent = isUrgentDoctor
+        ? `${country.flag} ${country.name} 병원·의사 제시 카드 (${phrase.langName})`
+        : `${country.flag} ${country.name} 약사 제시 카드 (${phrase.langName})`;
+      document.getElementById('pharmacist-modal-title').textContent = isUrgentDoctor
+        ? '병원·접수처에 이 화면을 보여주세요'
+        : '약사님께 이 화면을 보여주세요';
+
+      const altScanBtn = document.getElementById('pharmacist-alt-scan-btn');
+      const urgentMapBtn = document.getElementById('pharmacist-urgent-map-btn');
+      if (altScanBtn) altScanBtn.classList.toggle('hidden', isUrgentDoctor);
+      if (urgentMapBtn) urgentMapBtn.classList.toggle('hidden', !isUrgentDoctor);
+
+      const cardBox = document.getElementById('pharmacist-card-content');
+      cardBox.className = isUrgentDoctor
+        ? 'overflow-y-auto bg-rose-50/90 border-2 border-rose-600 rounded-2xl p-4 space-y-3'
+        : 'overflow-y-auto bg-medi-50/80 border-2 border-medi-600 rounded-2xl p-4 space-y-3';
+
+      cardBox.innerHTML = `
+        <div class="bg-white rounded-xl p-3 border ${isUrgentDoctor ? 'border-rose-300' : 'border-medi-200'}">
+          <div class="text-sm font-extrabold ${isUrgentDoctor ? 'text-rose-900' : 'text-medi-950'} leading-snug">
+            ${isUrgentDoctor ? phrase.urgentDoctorHeadline : phrase.headline}
+          </div>
+          ${country.lang !== 'en' ? `<div class="text-[11px] font-semibold text-slate-500 mt-1">${isUrgentDoctor ? 'URGENT: I have severe symptoms and need to see a doctor right away.' : 'Hello Pharmacist, I am looking for this medicine or a suitable alternative.'}</div>` : ''}
+        </div>
+
+        ${isUrgentDoctor ? '' : `
+        <div class="space-y-1">
+          <div class="text-[10px] font-extrabold text-medi-800 uppercase">${phrase.lookingFor}</div>
+          <div class="text-base font-extrabold text-slate-950">${mainProduct}</div>
+          <div class="text-xs font-bold text-slate-700">${med.ingredient}</div>
+        </div>
+        `}
+
+        <div class="${isUrgentDoctor ? '' : 'border-t border-medi-200 pt-2.5'} space-y-1">
+          <div class="text-[10px] font-extrabold ${isUrgentDoctor ? 'text-rose-800' : 'text-medi-800'} uppercase">${phrase.symptom}</div>
+          <div class="text-sm font-extrabold text-slate-900 leading-snug">${customContext?.symptomLocal || symptomDisplay}</div>
+          ${customContext?.symptomLocal && country.lang !== 'en' ? `<div class="text-xs font-semibold text-slate-600 leading-snug">${symptomDisplay}</div>` : ''}
+        </div>
+
+        <div class="border-t ${isUrgentDoctor ? 'border-rose-200' : 'border-medi-200'} pt-2.5 space-y-1.5 text-xs">
+          <div><b class="text-slate-900">${phrase.patient}:</b> <span class="text-slate-800 font-semibold">${patientText}</span></div>
+          <div class="${state.hasAllergy ? 'p-2.5 rounded-xl bg-rose-100 border border-rose-300 text-rose-950 font-extrabold' : 'text-slate-800 font-semibold'}">
+            <b>${phrase.allergy}:</b> <span>${allergyText}</span>
+          </div>
+        </div>
+      `;
+      document.getElementById('pharmacist-modal').classList.remove('hidden');
+    }
+
+    function closePharmacistCardModal() {
+      document.getElementById('pharmacist-modal').classList.add('hidden');
+    }
+
+    function scanAlternativeFromPharmacist() {
+      closePharmacistCardModal();
+      triggerMedCamera();
+    }
+
+    // =========================================================================
+    // 5. AI 증상 복약 상담 & 로그인 한도 관리
+    // =========================================================================
+    function getDailyLimit() { return state.user ? MEMBER_DAILY_LIMIT : GUEST_DAILY_LIMIT; }
+    function getRemainingQuota() {
+      const today = new Date().toISOString().slice(0, 10);
+      if (state.dailyQuota.date !== today) {
+        state.dailyQuota = { date: today, used: 0 };
+      }
+      return Math.max(0, getDailyLimit() - state.dailyQuota.used);
+    }
+
+    function updateAuthAndQuotaUI() {
+      const limit = getDailyLimit();
+      const remaining = getRemainingQuota();
+      document.getElementById('header-auth-icon').textContent = state.user ? '💊' : '👤';
+      document.getElementById('header-auth-text').textContent = state.user ? state.user.name.slice(0, 6) : '로그인';
+      const pill = document.getElementById('header-quota-pill');
+      pill.textContent = `${remaining}/${limit}`;
+
+      const askQuotaBadge = document.getElementById('ask-quota-badge');
+      const askUpgradeBtn = document.getElementById('ask-upgrade-btn');
+      if (askQuotaBadge) askQuotaBadge.textContent = `오늘 남은 무료 상담: ${remaining} / ${limit}회`;
+      if (askUpgradeBtn) {
+        askUpgradeBtn.textContent = state.user ? '회원 한도 3회 적용 중 ✓' : '로그인 후 이용 (3회)';
+      }
+
+      const loggedOutBox = document.getElementById('auth-logged-out-box');
+      const loggedInBox = document.getElementById('auth-logged-in-box');
+      if (loggedOutBox && loggedInBox) {
+        loggedOutBox.classList.toggle('hidden', !!state.user);
+        loggedInBox.classList.toggle('hidden', !state.user);
+        if (state.user) {
+          document.getElementById('auth-user-name').textContent = `${state.user.name} 님`;
+          document.getElementById('auth-user-email').textContent = state.user.email;
+        }
+      }
+    }
+
+    function openAuthModal() { updateAuthAndQuotaUI(); document.getElementById('auth-modal').classList.remove('hidden'); }
+    function closeAuthModal() { document.getElementById('auth-modal').classList.add('hidden'); }
+
+    function handleEmailDemoLogin(e) {
+      e.preventDefault();
+      const name = document.getElementById('demo-name-input').value.trim();
+      const email = document.getElementById('demo-email-input').value.trim();
+      if (!name || !email) return;
+      state.user = { name, email };
+      saveLocalState();
+      updateAuthAndQuotaUI();
+      closeAuthModal();
+      showToast(`💊 ${name}님 환영합니다! (하루 3회 AI 상담 + 카메라 스캔 2회 한도 적용)`);
+    }
+
+    function handleUserLogout() {
+      state.user = null; state.hasAllergy = false; state.allergyDetail = ''; state.chatHistory = []; const ai=document.getElementById('allergy-detail-input'); if(ai) ai.value=''; if(typeof updatePatientSettingsUI==='function') updatePatientSettingsUI(); if(typeof renderResultCard==='function') renderResultCard(); if(typeof renderChatMessages==='function') renderChatMessages();
+      saveLocalState();
+      updateAuthAndQuotaUI();
+      closeAuthModal();
+      showToast('로그아웃되었습니다.');
+    }
+
+    function openAskWithContext() {
+      switchTab('ask');
+      const input = document.getElementById('ask-input');
+      if (input) {
+        input.value = '';
+        input.focus();
+      }
+    }
+
+    function renderAskContextAndChips() {
+      const country = getCurrentCountry();
+      const summaryEl = document.getElementById('ask-context-summary');
+      if (summaryEl) {
+        summaryEl.textContent = `${country.flag} ${country.name} · 증상 맞춤 상비약 상담`;
+      }
+
+      const quickSymptoms = [
+        '허리를 삐끗해서 움직일 때마다 아파요',
+        '어제부터 목이 따갑고 침 삼키기 힘들어요',
+        '매운 걸 먹고 속이 계속 쓰려요',
+        '변비가 4일째 계속돼요',
+        '가슴이 쥐어짜듯 아프고 숨이 차요'
+      ];
+
+      const chipsBox = document.getElementById('ask-quick-chips');
+      if (chipsBox) {
+        chipsBox.innerHTML = quickSymptoms.map(q => `
+          <button
+            type="button"
+            onclick="askQuickQuestion('${q.replace(/'/g, "\\'")}')"
+            class="px-2.5 py-1.5 rounded-xl bg-white border border-slate-200 text-[11px] font-semibold text-slate-700 hover:border-medi-500 shrink-0 transition"
+          >${q}</button>
+        `).join('');
+        enableDragToScroll(chipsBox);
+      }
+    }
+
+    function askQuickQuestion(q) {
+      if (didDragScroll || state.isAskingAI) return;
+      const input = document.getElementById('ask-input');
+      if (input) input.value = q;
+      sendQuestionToAI(q);
+    }
+
+    function handleAskSubmit(e) {
+      e.preventDefault();
+      if (state.isAskingAI) return;
+      const input = document.getElementById('ask-input');
+      const text = input ? input.value.trim() : '';
+      if (!text) return;
+      input.value = '';
+      sendQuestionToAI(text);
+    }
+
+    function clearChatHistory() {
+      state.chatHistory = [];
+      renderChatMessages();
+      showToast('상담 내역을 초기화했습니다.');
+    }
+
+    // =========================================================================
+    // 6. Gemini 구조화 NLU 상담 (Firebase Cloud Functions 프록시 경유)
+    // =========================================================================
+    let aiTmr = null;
+function startAiPct() {
+  stopAiPct();
+  const b = document.getElementById('chat-messages');
+  if (!b) return;
+  let p = 8;
+  const w = document.createElement('div');
+  w.id = 'ai-pct-box';
+  w.className = 'p-3 rounded-2xl bg-medi-50 border border-medi-200 space-y-1.5 text-xs';
+  w.innerHTML = '<div class="flex justify-between font-bold text-medi-900"><span id="ai-pct-lbl">AI 증상 분석 중...</span><span id="ai-pct-num">8%</span></div><div class="w-full h-2 rounded-full bg-medi-100 overflow-hidden"><div id="ai-pct-bar" class="h-full bg-medi-600 transition-all" style="width:8%"></div></div>';
+  b.appendChild(w);
+  b.scrollTop = b.scrollHeight;
+  aiTmr = setInterval(() => {
+    if (p < 98) {
+      p = Math.min(98, p + (p < 50 ? 9 : (p < 80 ? 4 : 1)));
+      const bar = document.getElementById('ai-pct-bar'), num = document.getElementById('ai-pct-num'), lbl = document.getElementById('ai-pct-lbl');
+      if (bar) bar.style.width = p + '%';
+      if (num) num.textContent = p + '%';
+      if (lbl) lbl.textContent = p < 40 ? '증상 위험도 확인 중...' : (p < 75 ? '현지 약국 상비약 매칭 중...' : '의료진 제시 카드 생성 중...');
+    }
+  }, 220);
+}
+function stopAiPct() {
+  if (aiTmr) { clearInterval(aiTmr); aiTmr = null; }
+  const w = document.getElementById('ai-pct-box');
+  if (w) w.remove();
+}
+async function analyzeSymptomWithGemini(userText) {
+      const country = getCurrentCountry();
+      const phrase = getCountryPhrase();
+      const medCatalogSummary = MEDICINES.map(m => `${m.id}: ${m.name} (${m.subtitle}, 성분: ${m.ingredient})`).join(' | ');
+
+      const systemPrompt = `당신은 해외 거주 한국인 어르신들을 돕는 안전 최우선 AI 복약·의료 안내 도우미입니다.
+사용자가 어떤 일상적인 한국어 표현(예: "누가 돌을 던져서 머리에 맞고 피가 나요", "어금니가 아픈데 피가 안 멈춰요", "허리를 삐끗했어요")으로 증상을 말하든 문맥과 의학적 위험도를 정확히 이해하세요.
+
+[판단 기준]
+1. isUrgent (병원/응급실 우선 방문 필요 여부):
+   - 외상/타박/낙상 후 머리 통증·출혈·어지럼증, 멈추지 않는 출혈(잇몸/치아/상처/혈변/토혈), 흉통, 호흡곤란, 마비·실신·의식 저하, 39도 이상 지속 고열, 심한 복통·화상 등 상비약으로 해결할 수 없거나 의사 진료가 먼저 필요한 경우 반드시 isUrgent = true 로 판단하세요.
+2. matchedMedId:
+   - isUrgent가 false일 때만 아래 목록 중 가장 적절한 상비약 id 1개를 선택하세요:
+     ${medCatalogSummary}
+3. symptomEn & symptomLocal:
+   - 사용자가 호소한 구체적인 증상(부위, 원인, 동반 증상, 기간)을 빠짐없이 반영해 의료진/약사에게 보여줄 명확한 문장으로 작성하세요.
+   - symptomEn은 반드시 영어로, symptomLocal은 반드시 "${phrase.langName}"로 작성하세요 (한국어 절대 포함 금지).
+4. reasonOrGuideKo:
+   - isUrgent가 true면: 왜 상비약 대신 즉시 병원(의사·응급실)에 가야 하는지 한국어로 명확히 설명.
+   - isUrgent가 false면: 해당 상비약을 추천하는 이유와 복용 시 주의점을 한국어로 친절하게 설명.`;
+
+      startAiPct();
+      const payload = {
+        contents: [{
+          role: 'user',
+          parts: [{ text: `현재 거주 국가: ${country.name} (현지 언어: ${phrase.langName}), 환자 구분: ${state.patientType}\n사용자 증상 호소: "${userText}"` }]
+        }],
+        systemInstruction: { parts: [{ text: systemPrompt }] },
+        generationConfig: {
+          responseMimeType: 'application/json',
+          responseSchema: {
+            type: 'OBJECT',
+            properties: {
+              isUrgent: { type: 'BOOLEAN' },
+              matchedMedId: { type: 'STRING' },
+              reasonOrGuideKo: { type: 'STRING' },
+              symptomEn: { type: 'STRING' },
+              symptomLocal: { type: 'STRING' }
+            },
+            required: ['isUrgent', 'matchedMedId', 'reasonOrGuideKo', 'symptomEn', 'symptomLocal']
+          }
+        }
+      };
+
+      for (let attempt = 0; attempt < 3; attempt++) {
+        try {
+          const data = await callGeminiViaProxy(payload, 'gemini-3-flash-preview');
+          const rawJson = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+          if (rawJson) {
+            return JSON.parse(rawJson);
+          }
+        } catch (err) {
+          if (attempt < 2) {
+            await new Promise(r => setTimeout(r, 800 * Math.pow(2, attempt)));
+          }
+        }
+      }
+      return null;
+    }
+
+    // 네트워크 오프라인 시에만 동작하는 보조 안전망
+    function offlineFallbackAnalysis(text) {
+      const q = text.replace(/\s+/g, '');
+      const urgentPattern = /(피가|출혈|혈변|토혈|돌에|맞았|넘어졌|부딪혔|뇌진탕|가슴이|흉통|숨이|호흡|마비|실신|쓰러|어지러|고열|39도|40도|골절|부러졌)/;
+      if (urgentPattern.test(q)) {
+        return {
+          isUrgent: true,
+          matchedMedId: 'tylenol',
+          reasonOrGuideKo: '외상, 출혈, 어지럼증, 흉통·호흡곤란, 고열 등은 약국 상비약으로 해결할 수 없는 위험 신호입니다. 지체하지 마시고 즉시 병원(의사·응급실) 진료를 받으세요.',
+          symptomEn: 'Urgent medical evaluation needed for acute injury, bleeding, dizziness, or severe symptoms.',
+          symptomLocal: ''
+        };
+      }
+      let medId = 'tylenol';
+      if (/(허리|삐끗|근육|담|파스|관절|염좌)/.test(q)) medId = 'pas';
+      else if (/(목이|인후|침삼|목감기)/.test(q)) medId = 'strepsils';
+      else if (/(코막|재채기|비염|알레르기|두드러기|가려)/.test(q)) medId = 'zyrtec';
+      else if (/(속쓰|위산|신물|위통)/.test(q)) medId = 'gaviscon';
+      else if (/(체했|소화|더부룩|가스|과식)/.test(q)) medId = 'festal';
+      else if (/(설사|물갈이|배탈)/.test(q)) medId = 'imodium';
+      else if (/(변비|똥|대변)/.test(q)) medId = 'dulcolax';
+      else if (/(상처|까졌|베였|연고)/.test(q)) medId = 'fucidin';
+      else if (/(눈|충혈|눈물|결막)/.test(q)) medId = 'eyedrops';
+      else if (/(몸살|오한|감기)/.test(q)) medId = 'pancold';
+
+      const med = MEDICINES.find(m => m.id === medId) || MEDICINES[0];
+      return {
+        isUrgent: false,
+        matchedMedId: med.id,
+        reasonOrGuideKo: `${med.subtitle} 증상에 가장 가까운 일반 상비약입니다.`,
+        symptomEn: med.symptomEn,
+        symptomLocal: ''
+      };
+    }
+
+    async function sendQuestionToAI(questionText) {
+      const country = getCurrentCountry();
+      const phrase = getCountryPhrase();
+      const cacheKey = `${country.id}_${country.lang}_${state.patientType}_${questionText.trim().toLowerCase()}`;
+
+      state.chatHistory.push({ role: 'user', text: questionText });
+      renderChatMessages();
+
+      let parsed = state.user ? MEMORY_QA_CACHE.get(cacheKey) : null;
+      if (!parsed) {
+        if (getRemainingQuota() <= 0) {
+          state.chatHistory.push({
+            role: 'ai',
+            text: state.user
+              ? '오늘의 무료 상담 한도(하루 3회)를 모두 사용했습니다. 내일 다시 이용해 주세요.'
+              : (() => { openAuthModal(); return '비로그인 상태에서는 AI 무료 상담을 이용할 수 없습니다. 상단 [로그인]을 눌러 로그인하시면 하루 3회까지 무료로 상담하실 수 있습니다.'; })()
+          });
+          renderChatMessages();
+          return;
+        }
+
+        state.isAskingAI = true;
+        const submitBtn = document.getElementById('ask-submit-btn');
+        if (submitBtn) submitBtn.disabled = true;
+        renderChatMessages();
+
+        parsed = await analyzeSymptomWithGemini(questionText);
+        if (!parsed) {
+          parsed = offlineFallbackAnalysis(questionText);
+        } else {
+          MEMORY_QA_CACHE.set(cacheKey, parsed);
+        }
+
+        state.dailyQuota.used += 1;
+        saveLocalState();
+        updateAuthAndQuotaUI();
+
+        state.isAskingAI = false;
+        if (submitBtn) submitBtn.disabled = false;
+      }
+
+      if (parsed.isUrgent) {
+        const urgentReply = `🚨 **상비약보다 먼저 의사(병원·응급실) 진료를 받으셔야 합니다!**\n\n` +
+          `• **위험 안내:** ${parsed.reasonOrGuideKo}\n` +
+          `• **권장 행동:** 약국 상비약으로 시간을 지체하지 마시고, 아래 **[🏥 지금 문 연 가까운 병원·의원 찾기]** 버튼을 눌러 즉시 의사를 만나세요.\n` +
+          `• **병원 접수처 소통:** 아래 빨간색 **[🏥 병원·의사 제시 카드]**를 누르시면 **${phrase.langName}**로 위 증상이 그대로 크게 표시됩니다.`;
+
+        state.chatHistory.push({
+          role: 'ai',
+          text: urgentReply,
+          cardContext: {
+            isUrgent: true,
+            symptomEn: parsed.symptomEn,
+            symptomLocal: parsed.symptomLocal || parsed.symptomEn
+          }
+        });
+      } else {
+        const med = MEDICINES.find(m => m.id === parsed.matchedMedId) || MEDICINES[0];
+        const localInfo = getLocalMedInfo(med, country);
+        const isChild = state.patientType === 'child';
+        const list = isChild ? (localInfo.child || []) : (localInfo.adult || []);
+        const names = list.map(i => i.name).join(' / ');
+        const dosage = isChild ? med.dosageChild : med.dosageAdult;
+
+        const reply = `말씀하신 증상에는 한국 상비약 **${med.name}(${med.subtitle})** 계열이 가장 가깝습니다.\n\n` +
+          `• **맞춤 안내:** ${parsed.reasonOrGuideKo}\n` +
+          `• **${country.name} 현지 추천 약 (${isChild ? '어린이용' : '성인용'}):** ${names}\n` +
+          `• **주성분:** ${med.ingredient}\n` +
+          `• **파는 곳:** ${localInfo.where}\n` +
+          `• **복용·주의:** ${dosage} (${med.warning})\n\n` +
+          `※ **구매·복용 전 반드시 현지 약사 또는 의사와 상담하세요.**`;
+
+        state.chatHistory.push({
+          role: 'ai',
+          text: reply,
+          cardContext: {
+            isUrgent: false,
+            medId: med.id,
+            recommendedProduct: list[0]?.name || med.ingredient,
+            symptomEn: parsed.symptomEn,
+            symptomLocal: parsed.symptomLocal || parsed.symptomEn
+          }
+        });
+      }
+
+      renderChatMessages();
+    }
+
+    function escapeHTML(str) {
+      return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    function formatAIReply(text) {
+      return escapeHTML(text)
+        .replace(/\*\*(.*?)\*\*/g, '<b class="text-slate-950">$1</b>')
+        .replace(/\n/g, '<br/>');
+    }
+
+    function openCardFromChatIndex(idx) {
+      const msg = state.chatHistory[idx];
+      if (!msg || !msg.cardContext) return;
+      openPharmacistCardModal(msg.cardContext);
+    }
+
+    function renderChatMessages() {
+      const box = document.getElementById('chat-messages');
+      if (!box) return;
+      const country = getCurrentCountry();
+      const phrase = getCountryPhrase();
+
+      if (state.chatHistory.length === 0) {
+        box.innerHTML = `
+          <div class="flex items-start gap-2.5">
+            <div class="w-8 h-8 rounded-xl bg-medi-100 flex items-center justify-center text-base shrink-0">🩺</div>
+            <div class="bg-slate-50 border border-slate-200/80 rounded-2xl rounded-tl-xs p-3 text-xs text-slate-700 leading-relaxed space-y-1">
+              <div class="font-extrabold text-slate-900">AI 증상·복약 상담 도우미</div>
+              <p>약 이름을 모르셔도 괜찮습니다. <b>"어제부터 목이 따가워요"</b>, <b>"허리를 삐끗했어요"</b>처럼 편하게 말씀해 주시면 증상 심각도를 먼저 확인한 뒤 <b>${country.name} 약국 추천약</b> 또는 <b>병원·의사 제시 카드(${phrase.langName})</b>로 바로 연결해 드립니다.</p>
+            </div>
+          </div>
+        `;
+        return;
+      }
+
+      let html = state.chatHistory.map((msg, idx) => {
+        if (msg.role === 'user') {
+          return `
+            <div class="flex justify-end">
+              <div class="max-w-[82%] bg-medi-700 text-white rounded-2xl rounded-tr-xs px-3.5 py-2.5 text-xs font-medium leading-relaxed shadow-2xs">
+                ${escapeHTML(msg.text)}
+              </div>
+            </div>
+          `;
+        }
+        const isUrgent = !!msg.cardContext?.isUrgent;
+        const actionArea = msg.cardContext
+          ? isUrgent
+            ? `
+              <div class="mt-2.5 space-y-1.5">
+                <button
+                  type="button"
+                  onclick="openNearbyMedicalClinic()"
+                  class="w-full py-2.5 px-3 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-extrabold shadow-2xs transition"
+                >
+                  🏥 지금 문 연 가까운 병원·의원(GP) 찾기
+                </button>
+                <button
+                  type="button"
+                  onclick="openCardFromChatIndex(${idx})"
+                  class="w-full py-2 px-3 rounded-xl bg-white hover:bg-rose-100 text-rose-900 border-2 border-rose-400 text-xs font-extrabold transition"
+                >
+                  🗣️ 병원·의사 제시 카드 (${phrase.langName}) 보기
+                </button>
+              </div>
+            `
+            : `
+              <button
+                type="button"
+                onclick="openCardFromChatIndex(${idx})"
+                class="mt-2.5 w-full py-2.5 px-3 rounded-xl bg-amber-300 hover:bg-amber-400 text-slate-900 text-xs font-extrabold shadow-2xs transition"
+              >
+                🗣️ 약사님께 이 증상·추천약 (${phrase.langName}) 카드 보여주기
+              </button>
+            `
+          : '';
+
+        return `
+          <div class="flex items-start gap-2.5">
+            <div class="w-8 h-8 rounded-xl ${isUrgent ? 'bg-rose-100' : 'bg-medi-100'} flex items-center justify-center text-base shrink-0">${isUrgent ? '🚨' : '🩺'}</div>
+            <div class="max-w-[88%] ${isUrgent ? 'bg-rose-50/95 border-2 border-rose-300' : 'bg-slate-50 border border-slate-200/80'} rounded-2xl rounded-tl-xs p-3 text-xs text-slate-800 leading-relaxed">
+              <div>${formatAIReply(msg.text)}</div>
+              ${actionArea}
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      if (state.isAskingAI) {
+        html += `
+          <div class="flex items-center gap-2 text-xs text-slate-500 pl-10">
+            <span class="animate-bounce">🩺</span>
+            <span>증상 위험도와 ${country.name} 현지 약품·번역을 분석 중입니다...</span>
+          </div>
+        `;
+      }
+
+      box.innerHTML = html;
+      box.scrollTop = box.scrollHeight;
+    }
+
+    // =========================================================================
+    // 7. 카메라 촬영 약 상자 한국어 번역
+    // =========================================================================
+    function getOcrLeft() {
+  if (!state.user) return 0;
+  const d = new Date().toISOString().slice(0, 10);
+  if (!state.ocrQuota || state.ocrQuota.date !== d) state.ocrQuota = { date: d, used: 0 };
+  return Math.max(0, 2 - state.ocrQuota.used);
+}
+function triggerMedCamera() {
+  if (!state.user) {
+    showToast('비로그인 상태에서는 약 봉투·처방전 카메라 OCR을 이용할 수 없습니다. 로그인해 주세요.');
+    openAuthModal();
+    return;
+  }
+  if (getOcrLeft() <= 0) {
+    showToast('오늘의 약 봉투·처방전 카메라 OCR 한도(하루 2회)를 모두 사용했습니다.');
+    return;
+  }
+  const input = document.getElementById('med-camera-input');
+  if (input) {
+    input.value = '';
+    input.click();
+  }
+}
+
+    function handleMedPhotoUpload(event) {
+      const file = event.target.files?.[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = async (e) => {
+        const dataUrl = e.target.result;
+        const base64Data = dataUrl.split(',')[1];
+        const mimeType = file.type || 'image/jpeg';
+
+        document.getElementById('scanned-med-preview').src = dataUrl;
+        document.getElementById('scanned-med-analysis').innerHTML = `
+          <div class="flex items-center gap-2 font-bold text-medi-800">
+            <span class="animate-spin">⏳</span>
+            <span>약 상자의 성분과 복용법을 한국어로 번역하고 있습니다...</span>
+          </div>
+        `;
+        document.getElementById('photo-result-modal').classList.remove('hidden');
+
+        const country = getCurrentCountry();
+        const prompt = `이 사진은 ${country.name} 약국/마트의 의약품 상자입니다. 해외 거주 한국인 어르신이 이해하기 쉽게 아래 4가지 항목으로만 명확하게 한국어로 정리해 주세요:
+1. 제품명 및 주성분 (비슷한 한국 상비약 비유 포함)
+2. 주요 효능 (어떤 증상에 먹는 약인지)
+3. 복용법 및 용량 (성인/어린이 구분)
+4. 주의사항 및 부작용`;
+
+        startAiPct();
+      const payload = {
+          contents: [{
+            role: 'user',
+            parts: [
+              { text: prompt },
+              { inlineData: { mimeType, data: base64Data } }
+            ]
+          }]
+        };
+
+        let replyText = '';
+        for (let attempt = 0; attempt < 3; attempt++) {
+          try {
+            const data = await callGeminiViaProxy(payload, 'gemini-3-flash-preview');
+            replyText = data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
+            if (replyText) break;
+          } catch (err) {
+            if (attempt < 2) await new Promise(r => setTimeout(r, 800 * Math.pow(2, attempt)));
+          }
+        }
+
+        if (!replyText) {
+          replyText = `**약 상자 판독 안내**\n• 상자 앞면의 영문 성분명(예: Paracetamol, Ibuprofen, Cetirizine 등)을 상단 검색창에 입력하시면 한국 상비약과 즉시 비교해 드립니다.\n• 밝은 곳에서 글씨가 선명하게 보이도록 다시 촬영해 주세요.`;
+        }
+
+        document.getElementById('scanned-med-analysis').innerHTML = formatAIReply(replyText);
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function closePhotoResultModal() {
+      document.getElementById('photo-result-modal').classList.add('hidden');
+    }
+
+    // =========================================================================
+    // 8. 전 세계 국가 선택 · 알레르기 · 글자 크기 · 탭 전환 · 로컬 저장
+    // =========================================================================
+    function renderCountryGrid() {
+      const grid = document.getElementById('country-grid');
+      if (!grid) return;
+      const filter = state.countryFilter.trim().toLowerCase();
+      const filtered = COUNTRIES.filter(c =>
+        !filter || c.name.toLowerCase().includes(filter) || (PHARMACIST_PHRASES[c.lang]?.langName || '').includes(filter)
+      );
+
+      if (filtered.length === 0) {
+        grid.innerHTML = `<div class="col-span-2 text-center text-xs text-slate-500 py-3">목록에 없는 국가입니다. 위 <b>[적용]</b> 버튼을 누르면 해당 국가가 바로 등록됩니다!</div>`;
+        return;
+      }
+
+      grid.innerHTML = filtered.map(c => {
+        const isSelected = c.id === state.country.id;
+        const langLabel = PHARMACIST_PHRASES[c.lang]?.langName || '영어';
+        return `
+          <button
+            type="button"
+            onclick="selectCountry('${c.id}')"
+            class="p-2.5 rounded-xl border-2 text-left transition flex items-center gap-2 ${
+              isSelected
+                ? 'bg-medi-50 border-medi-600 text-medi-950'
+                : 'bg-slate-50/70 border-slate-200/80 text-slate-700 hover:bg-white'
+            }"
+          >
+            <span class="text-lg shrink-0">${c.flag}</span>
+            <div class="min-w-0">
+              <div class="text-xs font-extrabold truncate">${c.name}</div>
+              <div class="text-[10px] text-slate-500 truncate">${langLabel}</div>
+            </div>
+          </button>
+        `;
+      }).join('');
+    }
+
+    function filterCountryPresets(val) {
+      state.countryFilter = val;
+      renderCountryGrid();
+    }
+
+    function selectCountry(countryId) {
+      const found = COUNTRIES.find(c => c.id === countryId);
+      if (!found) return;
+      state.country = found;
+      saveLocalState();
+      renderAll();
+      showToast(`${found.flag} ${found.name} 설정 완료!`);
+    }
+
+    function inferCountryLanguage(name) {
+      if (/일본|japan/i.test(name)) return 'ja';
+      if (/베트남|vietnam/i.test(name)) return 'vi';
+      if (/태국|thailand/i.test(name)) return 'th';
+      if (/독일|오스트리아|스위스|germany/i.test(name)) return 'de';
+      if (/프랑스|벨기에|france/i.test(name)) return 'fr';
+      if (/스페인|멕시코|칠레|아르헨티나|콜롬비아|페루|spain/i.test(name)) return 'es';
+      if (/중국|대만|홍콩|china|taiwan/i.test(name)) return 'zh';
+      if (/인도네시아|indonesia/i.test(name)) return 'id';
+      if (/이탈리아|italy/i.test(name)) return 'it';
+      return 'en';
+    }
+
+    function applyCustomCountry() {
+      const input = document.getElementById('custom-country-input');
+      const rawName = input ? input.value.trim() : '';
+      if (!rawName) return;
+
+      const existing = COUNTRIES.find(c => c.name === rawName);
+      if (existing) {
+        selectCountry(existing.id);
+        return;
+      }
+
+      const lang = inferCountryLanguage(rawName);
+      state.country = {
+        id: 'custom_' + Date.now(),
+        flag: '🌍',
+        name: rawName,
+        lang,
+        localPool: 'intl',
+        stores: `${rawName} 현지 약국 (Pharmacy)`
+      };
+      state.countryFilter = '';
+      if (input) input.value = '';
+      saveLocalState();
+      renderAll();
+      showToast(`🌍 ${rawName} 설정 완료! (${PHARMACIST_PHRASES[lang]?.langName || '영어'} 지원)`);
+    }
+
+    function selectPatientType(type) {
+      state.patientType = type;
+      saveLocalState();
+      updatePatientSettingsUI();
+      renderResultCard();
+    }
+
+    function toggleAllergy() {
+      state.hasAllergy = !state.hasAllergy;
+      saveLocalState();
+      updatePatientSettingsUI();
+    }
+
+    function updateAllergyDetail(val) {
+      state.allergyDetail = val;
+      saveLocalState();
+    }
+
+    function updatePatientSettingsUI() {
+      ['adult', 'child', 'pregnant'].forEach(t => {
+        const btn = document.getElementById(`btn-pat-${t}`);
+        if (!btn) return;
+        btn.className = state.patientType === t
+          ? 'py-2 rounded-xl text-xs font-extrabold border bg-medi-700 text-white border-medi-700'
+          : 'py-2 rounded-xl text-xs font-bold border bg-slate-50 text-slate-700 border-slate-200';
+      });
+
+      const allergyBtn = document.getElementById('btn-allergy-toggle');
+      const detailBox = document.getElementById('allergy-detail-box');
+      const detailInput = document.getElementById('allergy-detail-input');
+
+      if (allergyBtn) {
+        allergyBtn.textContent = state.hasAllergy ? '⚠️ 알레르기 있음' : '알레르기 없음';
+        allergyBtn.className = state.hasAllergy
+          ? 'px-3 py-1.5 rounded-lg text-[11px] font-extrabold border bg-rose-100 text-rose-800 border-rose-300'
+          : 'px-3 py-1.5 rounded-lg text-[11px] font-extrabold border bg-slate-50 text-slate-600 border-slate-200';
+      }
+      if (detailBox) {
+        detailBox.classList.toggle('hidden', !state.hasAllergy);
+      }
+      if (detailInput && detailInput.value !== state.allergyDetail) {
+        detailInput.value = state.allergyDetail;
+      }
+    }
+
+    function selectCategory(cat) {
+      if (didDragScroll) return;
+      state.selectedCategory = cat;
+      document.querySelectorAll('.cat-btn').forEach(btn => {
+        btn.className = btn.dataset.cat === cat
+          ? 'cat-btn px-2.5 py-1 rounded-lg text-[11px] font-bold bg-medi-700 text-white shrink-0'
+          : 'cat-btn px-2.5 py-1 rounded-lg text-[11px] font-bold bg-slate-100 text-slate-600 shrink-0';
+      });
+      renderMedGrid();
+    }
+
+    function applyFontPercent(pct, showBadge = false) {
+      const clamped = Math.min(140, Math.max(95, Math.round(pct)));
+      state.fontPercent = clamped;
+      document.documentElement.style.setProperty('--font-zoom', (clamped / 100).toFixed(2));
+
+      const labelEl = document.getElementById('header-font-label');
+      const settingsPctEl = document.getElementById('settings-zoom-percent');
+      if (labelEl) {
+        labelEl.textContent = clamped >= 122 ? '아주크게' : clamped >= 112 ? '크게' : '보통';
+      }
+      if (settingsPctEl) settingsPctEl.textContent = `(${clamped}%)`;
+
+      ['normal', 'large', 'xlarge'].forEach(mode => {
+        const btn = document.getElementById(`btn-font-${mode}`);
+        if (!btn) return;
+        const active =
+          (mode === 'normal' && clamped < 112) ||
+          (mode === 'large' && clamped >= 112 && clamped < 122) ||
+          (mode === 'xlarge' && clamped >= 122);
+        btn.className = active
+          ? 'py-2 rounded-xl text-xs font-extrabold border bg-medi-700 text-white border-medi-700'
+          : 'py-2 rounded-xl text-xs font-extrabold border bg-slate-50 text-slate-700 border-slate-200';
+      });
+
+      if (showBadge) {
+        const pill = document.getElementById('pinch-zoom-pill');
+        if (pill) {
+          pill.textContent = `🔍 글자 크기 ${clamped}%`;
+          pill.classList.remove('hidden');
+          clearTimeout(window._pinchPillTimer);
+          window._pinchPillTimer = setTimeout(() => pill.classList.add('hidden'), 1100);
+        }
+      }
+    }
+
+    function setFontSize(mode) {
+      const map = { normal: 105, large: 116, xlarge: 124 };
+      applyFontPercent(map[mode] || 124, true);
+      saveLocalState();
+    }
+
+    function cycleFontSize() {
+      const next = state.fontPercent < 112 ? 116 : state.fontPercent < 122 ? 124 : 105;
+      applyFontPercent(next, true);
+      saveLocalState();
+    }
+
+    function initPinchFontZoom() {
+      const shell = document.getElementById('app-shell');
+      if (!shell) return;
+      let startDist = 0;
+      let startPercent = state.fontPercent;
+
+      shell.addEventListener('touchstart', (e) => {
+        if (e.touches.length === 2) {
+          startDist = Math.hypot(
+            e.touches[0].clientX - e.touches[1].clientX,
+            e.touches[0].clientY - e.touches[1].clientY
+          );
+          startPercent = state.fontPercent;
+        }
+      }, { passive: true });
+
+      shell.addEventListener('touchmove', (e) => {
+        if (e.touches.length === 2 && startDist > 0) {
+          const currDist = Math.hypot(
+            e.touches[0].clientX - e.touches[1].clientX,
+            e.touches[0].clientY - e.touches[1].clientY
+          );
+          applyFontPercent(startPercent * (currDist / startDist), true);
+        }
+      }, { passive: true });
+
+      shell.addEventListener('touchend', () => {
+        if (startDist > 0) {
+          startDist = 0;
+          saveLocalState();
+        }
+      }, { passive: true });
+    }
+
+    function switchTab(tab) {
+      state.activeTab = tab;
+      ['guide', 'ask', 'settings'].forEach(t => {
+        const view = document.getElementById(`view-${t}`);
+        const nav = document.getElementById(`nav-${t}`);
+        if (view) view.classList.toggle('hidden', t !== tab);
+        if (nav) {
+          nav.className = t === tab
+            ? 'flex flex-col items-center gap-0.5 py-1.5 rounded-xl text-medi-700 font-bold transition'
+            : 'flex flex-col items-center gap-0.5 py-1.5 rounded-xl text-slate-400 font-semibold transition';
+        }
+      });
+
+      if (tab === 'ask') {
+        renderAskContextAndChips();
+        renderChatMessages();
+      } else if (tab === 'settings') {
+        renderCountryGrid();
+        updatePatientSettingsUI();
+      }
+      const scroller = document.getElementById('main-scroll');
+      if (scroller) scroller.scrollTop = 0;
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      if (!toast) return;
+      toast.textContent = msg;
+      toast.classList.remove('opacity-0');
+      clearTimeout(window._toastTimer);
+      window._toastTimer = setTimeout(() => toast.classList.add('opacity-0'), 2600);
+    }
+
+    let deferredInstallPrompt = null;
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredInstallPrompt = e;
+    });
+
+    function triggerPWAInstall() {
+      if (deferredInstallPrompt) {
+        deferredInstallPrompt.prompt();
+        deferredInstallPrompt = null;
+        return;
+      }
+      const ua = navigator.userAgent.toLowerCase();
+      const isIOS = /iphone|ipad|ipod/.test(ua);
+      const stepsEl = document.getElementById('pwa-guide-steps');
+      const titleEl = document.getElementById('pwa-guide-title');
+      if (isIOS) {
+        titleEl.textContent = '아이폰 전체화면 앱 설치 (3초)';
+        stepsEl.innerHTML = `
+          <div>1. 화면 맨 아래 사파리 <b>공유 버튼 [↑]</b>을 누르세요.</div>
+          <div>2. 메뉴를 아래로 내려 <b>[홈 화면에 추가]</b>를 누르세요.</div>
+          <div>3. 우측 상단 <b>[추가]</b>를 누르면 주소창 없는 앱 아이콘이 생깁니다!</div>
+        `;
+      } else {
+        titleEl.textContent = '안드로이드 전체화면 앱 설치 (3초)';
+        stepsEl.innerHTML = `
+          <div>1. 브라우저 우측 상단 <b>메뉴 버튼 [⋮]</b>을 누르세요.</div>
+          <div>2. <b>[홈 화면에 추가]</b>를 누른 뒤 <b>[설치]</b>를 선택하세요.</div>
+          <div>3. 바탕화면의 <b>💊 한인 상비약 수첩</b> 아이콘으로 실행하면 전체화면 앱으로 열립니다!</div>
+        `;
+      }
+      document.getElementById('pwa-guide-modal').classList.remove('hidden');
+    }
+
+    function closePWAGuideModal() {
+      document.getElementById('pwa-guide-modal').classList.add('hidden');
+    }
+
+    function saveLocalState() {
+      try {
+        localStorage.setItem('medimate_state_v3', JSON.stringify({
+          country: state.country,
+          patientType: state.patientType,
+          hasAllergy: state.hasAllergy,
+          allergyDetail: state.allergyDetail,
+          fontPercent: state.fontPercent,
+          selectedMedId: state.selectedMedId,
+          user: state.user,
+          dailyQuota: state.dailyQuota
+        }));
+      } catch (e) {}
+    }
+
+    function loadLocalState() {
+      try {
+        const raw = localStorage.getItem('medimate_state_v3');
+        if (!raw) return;
+        const saved = JSON.parse(raw);
+        if (saved.country) state.country = saved.country;
+        if (saved.patientType) state.patientType = saved.patientType;
+        if (typeof saved.hasAllergy === 'boolean') state.hasAllergy = saved.hasAllergy;
+        if (typeof saved.allergyDetail === 'string') state.allergyDetail = saved.allergyDetail;
+        if (saved.fontPercent) state.fontPercent = saved.fontPercent;
+        if (saved.selectedMedId) state.selectedMedId = saved.selectedMedId;
+        if (saved.user) { state.user = saved.user; } else { state.hasAllergy = false; state.allergyDetail = ''; }
+        if (saved.dailyQuota) state.dailyQuota = saved.dailyQuota;
+      } catch (e) {}
+    }
+
+    function renderAll() {
+      renderHeader();
+      renderMedGrid();
+      renderResultCard();
+      renderCountryGrid();
+      updatePatientSettingsUI();
+      updateAuthAndQuotaUI();
+    }
+
+    window.onload = function () {
+      const ua = navigator.userAgent.toLowerCase();
+      if (ua.includes('kakaotalk')) {
+        location.href = 'kakaotalk://web/openExternal?url=' + encodeURIComponent(location.href);
+      }
+
+      loadLocalState();
+      applyFontPercent(state.fontPercent, false);
+
+      if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone) {
+        const installBtn = document.getElementById('header-install-btn');
+        if (installBtn) installBtn.classList.add('hidden');
+      }
+
+      enableDragToScroll(document.getElementById('category-tabs'));
+      enableDragToScroll(document.getElementById('med-grid'));
+      initPinchFontZoom();
+      renderAll();
+    };
+  </script>
+</body>
+</html>
+
+
